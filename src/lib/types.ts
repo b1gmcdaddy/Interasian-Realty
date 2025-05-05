@@ -1,21 +1,25 @@
 export interface Property {
-  id: string;
+  listingId: number;
   title: string;
-  description: string;
+  location: string;
+  landArea?: string;
+  floorArea?: string;
+  bedRooms?: number;
+  bathRooms?: number;
   price: number;
-  address: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  type: PropertyType;
-  bedrooms: number;
-  bathrooms: number;
-  area: number;
-  images: string[];
-  features: string[];
-  createdAt: string;
-  agent: Agent;
+  description?: string;
+  status: boolean;
+  propertyType: PropertyType | string;
+  owner: string;
+  images?: PropertyImage[];
 }
+
+export type PropertyImage = {
+  imageId: number;
+  listingId: number;
+  fileName: string;
+  uploadDate: Date;
+};
 
 export type PropertyType =
   | "house"
@@ -57,3 +61,19 @@ export const PROPERTY_TYPES: {value: PropertyType | "all"; label: string}[] = [
   {value: "land", label: "Land/Lot"},
   {value: "commercial", label: "Commercial"},
 ];
+
+export type ApiResponse<T = undefined> = {
+  success: boolean;
+  message: string[] | string;
+  data?: T;
+  pagination?: Pagination;
+};
+
+export type Pagination = {
+  currentPage: number;
+  totalPages: number;
+  pageSize: number;
+  totalCount: number;
+  hasPrevious?: boolean;
+  hasNext?: boolean;
+};
