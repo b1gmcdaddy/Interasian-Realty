@@ -26,6 +26,7 @@ import {
 // import {useToast} from "@/hooks/use-toast";
 import {Building2, Mail, MapPin, Phone} from "lucide-react";
 import useGetAllListings from "@/api/listings/useGetAllListings";
+import useGetListing from "@/api/listings/useGetListing";
 
 const contactFormSchema = z.object({
   name: z.string().min(2, {message: "Name must be at least 2 characters"}),
@@ -44,14 +45,23 @@ type ContactFormValues = z.infer<typeof contactFormSchema>;
 export default function ContactPage() {
   //   const {toast} = useToast();
   const {data, isLoading, error} = useGetAllListings();
+  const {
+    data: listing,
+    isLoading: listingLoading,
+    error: listingError,
+  } = useGetListing(2);
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>An error has occurred: {error.message}</p>;
+
+  if (listingLoading) return <p>Loading...</p>;
+  if (listingError) return <p>An error has occurred: {listingError.message}</p>;
 
   return (
     <div>
       <h1>Contact Page</h1>
       <p>Fetched {data?.length ?? 0} listings.</p>
+      <p>Fetched {listing?.title ?? "No listing found"}</p>
     </div>
   );
   // <div className="container mx-auto px-4 py-12">
