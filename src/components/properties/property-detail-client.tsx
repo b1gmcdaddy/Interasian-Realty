@@ -22,21 +22,23 @@ export default function PropertyDetailClient({
 }: PropertyDetailClientProps) {
   const [property] = useState<Property>(initialProperty);
 
+  const imageUrls = property.images?.map((image) => image.imageUrl || "");
+
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
       <motion.div {...fadeIn()} className="mb-16">
-        <PropertyGallery images={property.images} title={property.title} />
+        <PropertyGallery images={imageUrls!} title={property.title} />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
           <div className="lg:col-span-2">
             <PropertyInfo property={property} />
             <Separator className="my-8" />
-            <PropertyFeatures features={property.features} />
+            {/* <PropertyFeatures features={property.features} /> */}
           </div>
 
           <div className="lg:col-span-1">
             <PropertyContact
-              agent={property.agent}
+              owner={property.owner}
               propertyTitle={property.title}
             />
           </div>

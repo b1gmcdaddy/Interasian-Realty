@@ -11,6 +11,7 @@ import {Button} from "@/components/ui/button";
 import {Card, CardContent, CardFooter} from "@/components/ui/card";
 import {cn} from "@/lib/utils";
 import {fadeIn, hoverScale} from "@/lib/motion";
+import {SITE_API} from "@/lib/constants";
 
 interface PropertyCardProps {
   property: Property;
@@ -28,7 +29,11 @@ export default function PropertyCard({property}: PropertyCardProps) {
         <div className="relative">
           <AspectRatio ratio={16 / 9} className="bg-muted">
             <img
-              src={property.images[0]}
+              src={
+                property.images?.[0]?.imageUrl
+                  ? property.images[0].imageUrl
+                  : "https://images.pexels.com/photos/1918291/pexels-photo-1918291.jpeg"
+              }
               alt={property.title}
               className="object-cover w-full h-full transition-transform duration-500 hover:scale-105"
             />
@@ -45,7 +50,7 @@ export default function PropertyCard({property}: PropertyCardProps) {
           <Badge
             className="absolute top-2 left-2 uppercase"
             variant="secondary">
-            {property.type.replace("-", " ")}
+            {property?.propertyType?.replace("-", " ")}
           </Badge>
           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
             <p className="text-white font-bold text-xl">
@@ -57,7 +62,7 @@ export default function PropertyCard({property}: PropertyCardProps) {
         <CardContent className="pt-4 flex-grow">
           <h3 className="font-semibold text-lg mb-2 line-clamp-1">
             <Link
-              href={`/properties/${property.id}`}
+              href={`/properties/${property.listingId}`}
               className="hover:underline">
               {property.title}
             </Link>
@@ -65,9 +70,7 @@ export default function PropertyCard({property}: PropertyCardProps) {
 
           <div className="flex items-start gap-1 text-muted-foreground mb-3">
             <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
-            <span className="line-clamp-1">
-              {property.address}, {property.city}, {property.state}
-            </span>
+            <span className="line-clamp-1">{property.location}</span>
           </div>
 
           <p className="text-muted-foreground text-sm line-clamp-2 mb-4">
@@ -75,35 +78,35 @@ export default function PropertyCard({property}: PropertyCardProps) {
           </p>
 
           <div className="flex items-center justify-between text-sm">
-            {property.bedrooms > 0 && (
+            {property.bedRooms! > 0 && (
               <div className="flex items-center gap-1">
                 <Bed className="h-4 w-4 text-muted-foreground" />
                 <span>
-                  {property.bedrooms} {property.bedrooms === 1 ? "Bed" : "Beds"}
+                  {property.bedRooms} {property.bedRooms === 1 ? "Bed" : "Beds"}
                 </span>
               </div>
             )}
 
-            {property.bathrooms > 0 && (
+            {property.bathRooms! > 0 && (
               <div className="flex items-center gap-1">
                 <Bath className="h-4 w-4 text-muted-foreground" />
                 <span>
-                  {property.bathrooms}{" "}
-                  {property.bathrooms === 1 ? "Bath" : "Baths"}
+                  {property.bathRooms}{" "}
+                  {property.bathRooms === 1 ? "Bath" : "Baths"}
                 </span>
               </div>
             )}
 
             <div className="flex items-center gap-1">
               <Ruler className="h-4 w-4 text-muted-foreground" />
-              <span>{property.area.toLocaleString()} sq ft</span>
+              <span>{property.landArea} sq ft</span>
             </div>
           </div>
         </CardContent>
 
         <CardFooter className="border-t pt-4">
           <Button asChild variant="secondary" className="w-full">
-            <Link href={`/properties/${property.id}`}>View Details</Link>
+            <Link href={`/properties/${property.listingId}`}>View Details</Link>
           </Button>
         </CardFooter>
       </Card>

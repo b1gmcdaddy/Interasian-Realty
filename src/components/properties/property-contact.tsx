@@ -41,12 +41,12 @@ const contactFormSchema = z.object({
 type ContactFormValues = z.infer<typeof contactFormSchema>;
 
 interface PropertyContactProps {
-  agent: Agent;
+  owner: string;
   propertyTitle: string;
 }
 
 export default function PropertyContact({
-  agent,
+  owner,
   propertyTitle,
 }: PropertyContactProps) {
   // const {toast} = useToast();
@@ -85,11 +85,11 @@ export default function PropertyContact({
     }, 1000);
   };
 
-  const initials = agent.name
-    .split(" ")
-    .map((name) => name[0])
-    .join("")
-    .toUpperCase();
+  // const initials = owner.name
+  //   .split(" ")
+  //   .map((name) => name[0])
+  //   .join("")
+  //   .toUpperCase();
 
   return (
     <motion.div {...fadeIn("left")} viewport={{once: true}}>
@@ -101,20 +101,20 @@ export default function PropertyContact({
         <CardContent className="pb-4">
           <div className="flex items-center gap-4 mb-6">
             <Avatar className="h-16 w-16">
-              <AvatarImage src={agent.avatar} alt={agent.name} />
-              <AvatarFallback>{initials}</AvatarFallback>
+              {/* <AvatarImage src={} alt={agent.name} /> */}
+              {/* <AvatarFallback>{initials}</AvatarFallback> */}
             </Avatar>
 
             <div>
-              <h3 className="font-medium text-lg">{agent.name}</h3>
+              <h3 className="font-medium text-lg">{owner}</h3>
               <div className="text-sm text-muted-foreground space-y-1 mt-1">
                 <div className="flex items-center gap-1">
                   <Mail className="h-3.5 w-3.5" />
-                  <span>{agent.email}</span>
+                  {/* <span>{agent.email}</span> */}
                 </div>
                 <div className="flex items-center gap-1">
                   <Phone className="h-3.5 w-3.5" />
-                  <span>{agent.phone}</span>
+                  {/* <span>{agent.phone}</span> */}
                 </div>
               </div>
             </div>

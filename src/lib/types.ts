@@ -19,6 +19,7 @@ export type PropertyImage = {
   listingId: number;
   fileName: string;
   uploadDate: Date;
+  imageUrl: string;
 };
 
 export type PropertyType =
@@ -47,7 +48,7 @@ export interface PropertyFilter {
 }
 
 export interface PropertySort {
-  field: "price" | "bedrooms" | "bathrooms" | "createdAt";
+  field: "price" | "bedRooms" | "bathRooms";
   direction: "asc" | "desc";
 }
 

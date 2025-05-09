@@ -1,27 +1,55 @@
-import {notFound} from "next/navigation";
-import {MOCK_PROPERTIES} from "@/lib/constants";
+"use client";
+
+import {notFound, useParams} from "next/navigation";
 import PropertyDetailClient from "@/components/properties/property-detail-client";
+import useGetListing from "@/api/listings/useGetListing";
+import useGetAllListings from "@/api/listings/useGetAllListings";
+import {Property} from "@/lib/types";
 
-export async function generateStaticParams() {
-  return MOCK_PROPERTIES.map((property) => ({
-    id: property.id,
-  }));
-}
+export default function PropertyDetailPage() {
+  const params = useParams();
+  const listingId = parseInt(params.id as string);
 
-export default function PropertyDetailPage({params}: {params: {id: string}}) {
-  const property = MOCK_PROPERTIES.find((p) => p.id === params.id);
+  const {
+    data: listing,
+    isLoading: isListingLoading,
+    error: listingError,
+  } = useGetListing(listingId, {enabled: !isNaN(listingId)});
 
-  if (!property) {
+  const {data: allListings, isLoading: isAllListingsLoading} =
+    useGetAllListings();
+
+  // Check loading state first
+  if (isListingLoading) {
+    return (
+      <div className="container mx-auto p-8">Loading property details...</div>
+    );
+  }
+
+  // Then check for errors
+  if (listingError) {
+    return (
+      <div className="container mx-auto p-8">
+        Error loading property details
+      </div>
+    );
+  }
+
+  if (!listing && !isListingLoading) {
     notFound();
   }
 
-  const relatedProperties = MOCK_PROPERTIES.filter(
-    (p) => p.id !== property.id && p.type === property.type
-  ).slice(0, 3);
+  const relatedProperties =
+    allListings
+      ?.filter(
+        (p: Property) =>
+          p.listingId !== listingId && p.propertyType === listing?.propertyType
+      )
+      .slice(0, 3) || [];
 
   return (
     <PropertyDetailClient
-      initialProperty={property}
+      initialProperty={listing as Property}
       relatedProperties={relatedProperties}
     />
   );

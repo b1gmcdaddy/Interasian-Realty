@@ -17,8 +17,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import useGetAllListings from "@/api/listings/useGetAllListings";
 
 export default function PropertiesPage() {
+  const {
+    data: listings,
+    isLoading: isLoadingListings,
+    error: errorListings,
+  } = useGetAllListings();
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState<PropertyFilter>({});
   const [sort, setSort] = useState<PropertySort>({
@@ -30,17 +36,13 @@ export default function PropertiesPage() {
   const properties = MOCK_PROPERTIES;
 
   // Filter and sort properties
-  const filteredProperties = properties
-    .filter((property) => {
+  const filteredListings = listings
+    ?.filter((listing: Property) => {
       // Search term filter
       if (
         searchTerm &&
-        !property.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        !property.description
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase()) &&
-        !property.address.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        !property.city.toLowerCase().includes(searchTerm.toLowerCase())
+        !listing.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        !listing.location.toLowerCase().includes(searchTerm.toLowerCase())
       ) {
         return false;
       }
@@ -49,26 +51,26 @@ export default function PropertiesPage() {
       if (
         filters.type &&
         filters.type !== "all" &&
-        property.type !== filters.type
+        listing.propertyType !== filters.type
       ) {
         return false;
       }
 
       // Price filter
-      if (filters.minPrice && property.price < filters.minPrice) {
+      if (filters.minPrice && listing.price < filters.minPrice) {
         return false;
       }
-      if (filters.maxPrice && property.price > filters.maxPrice) {
+      if (filters.maxPrice && listing.price > filters.maxPrice) {
         return false;
       }
 
       // Bedroom filter
-      if (filters.minBedrooms && property.bedrooms < filters.minBedrooms) {
+      if (filters.minBedrooms && listing.bedRooms! < filters.minBedrooms) {
         return false;
       }
 
       // Bathroom filter
-      if (filters.minBathrooms && property.bathrooms < filters.minBathrooms) {
+      if (filters.minBathrooms && listing.bathRooms! < filters.minBathrooms) {
         return false;
       }
 
@@ -78,15 +80,15 @@ export default function PropertiesPage() {
       if (sort.field === "price") {
         return sort.direction === "asc" ? a.price - b.price : b.price - a.price;
       }
-      if (sort.field === "bedrooms") {
+      if (sort.field === "bedRooms") {
         return sort.direction === "asc"
-          ? a.bedrooms - b.bedrooms
-          : b.bedrooms - a.bedrooms;
+          ? a.bedRooms! - b.bedRooms!
+          : b.bedRooms! - a.bedRooms!;
       }
-      if (sort.field === "bathrooms") {
+      if (sort.field === "bathRooms") {
         return sort.direction === "asc"
-          ? a.bathrooms - b.bathrooms
-          : b.bathrooms - a.bathrooms;
+          ? a.bathRooms! - b.bathRooms!
+          : b.bathRooms! - a.bathRooms!;
       }
       return 0;
     });
@@ -149,12 +151,12 @@ export default function PropertiesPage() {
           </aside>
 
           <div className="lg:col-span-3">
-            {filteredProperties.length > 0 ? (
+            {filteredListings?.length! > 0 ? (
               <motion.div
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
                 {...staggerContainer()}>
-                {filteredProperties.map((property) => (
-                  <PropertyCard key={property.id} property={property} />
+                {filteredListings?.map((listing: Property) => (
+                  <PropertyCard key={listing.listingId} property={listing} />
                 ))}
               </motion.div>
             ) : (
