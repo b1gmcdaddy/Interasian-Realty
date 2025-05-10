@@ -101,10 +101,10 @@ export default function PropertyFilters({
         <div>
           <Label className="mb-2 block">Bedrooms</Label>
           <Select
-            value={(filters.minBedrooms as any)?.toString() ?? "any"}
+            value={filters.minBedrooms?.toString() ?? "any"}
             onValueChange={handleBedroomsChange}>
             <SelectTrigger>
-              <SelectValue placeholder="Any" />
+              <SelectValue />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="any">Any</SelectItem>

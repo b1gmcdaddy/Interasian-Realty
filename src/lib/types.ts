@@ -31,14 +31,6 @@ export type PropertyType =
   | "commercial"
   | "house-and-lot";
 
-export interface Agent {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  avatar: string;
-}
-
 export interface PropertyFilter {
   type?: PropertyType | "all";
   minPrice?: number;

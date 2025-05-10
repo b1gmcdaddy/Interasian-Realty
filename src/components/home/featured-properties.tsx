@@ -7,14 +7,20 @@ import {Property} from "@/lib/types";
 import {staggerContainer} from "@/lib/motion";
 import PropertyCard from "@/components/properties/property-card";
 import {Button} from "@/components/ui/button";
+import useGetAllListings from "@/api/listings/useGetAllListings";
 
 interface FeaturedPropertiesProps {
   properties: Property[];
 }
 
-export default function FeaturedProperties({
-  properties,
-}: FeaturedPropertiesProps) {
+export default function FeaturedProperties() {
+  const {data: listings, isLoading, error} = useGetAllListings();
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
+  const featuredListings = listings?.slice(0, 3);
+
   return (
     <div className="text-center">
       <motion.div
@@ -33,8 +39,8 @@ export default function FeaturedProperties({
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"
         {...staggerContainer()}
         viewport={{once: true}}>
-        {properties.map((property) => (
-          <PropertyCard key={property.id} property={property} />
+        {featuredListings?.map((listing) => (
+          <PropertyCard key={listing.listingId} property={listing} />
         ))}
       </motion.div>
 

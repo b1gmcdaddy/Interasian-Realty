@@ -101,7 +101,10 @@ export default function PropertyContact({
         <CardContent className="pb-4">
           <div className="flex items-center gap-4 mb-6">
             <Avatar className="h-16 w-16">
-              {/* <AvatarImage src={} alt={agent.name} /> */}
+              <AvatarImage
+                src={"/avatar.png"}
+                alt={"Interasian Realty Services Inc."}
+              />
               {/* <AvatarFallback>{initials}</AvatarFallback> */}
             </Avatar>
 
