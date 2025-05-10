@@ -55,7 +55,6 @@ export default function ContactPage() {
   });
 
   const onSubmit = (data: ContactFormValues) => {
-    // In a real app, this would send data to your API
     console.log("Contact form data:", data);
 
     // toast({

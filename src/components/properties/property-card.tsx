@@ -32,7 +32,7 @@ export default function PropertyCard({property}: PropertyCardProps) {
               src={
                 property.images?.[0]?.imageUrl
                   ? property.images[0].imageUrl
-                  : "https://images.pexels.com/photos/1918291/pexels-photo-1918291.jpeg"
+                  : "/logo.png"
               }
               alt={property.title}
               className="object-cover w-full h-full transition-transform duration-500 hover:scale-105"

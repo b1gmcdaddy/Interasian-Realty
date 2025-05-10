@@ -3,7 +3,6 @@
 import {useState} from "react";
 import {motion} from "framer-motion";
 import {ArrowUpDown} from "lucide-react";
-import {MOCK_PROPERTIES} from "@/lib/constants";
 import {PropertyFilter, PropertySort, Property} from "@/lib/types";
 import {fadeIn, staggerContainer} from "@/lib/motion";
 import PropertyCard from "@/components/properties/property-card";
@@ -31,9 +30,6 @@ export default function PropertiesPage() {
     field: "price",
     direction: "asc",
   });
-
-  // In a real app, this would be a server-side or API call
-  const properties = MOCK_PROPERTIES;
 
   // Filter and sort properties
   const filteredListings = listings
