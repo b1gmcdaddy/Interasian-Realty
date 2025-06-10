@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import {motion} from "framer-motion";
-import {LucideIcon, DivideIcon} from "lucide-react";
+import {LucideIcon} from "lucide-react";
 import {Home, Building2, Building, Map, Trees, Store} from "lucide-react";
 import {cn} from "@/lib/utils";
 import {fadeIn, staggerContainer} from "@/lib/motion";

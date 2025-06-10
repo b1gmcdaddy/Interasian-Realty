@@ -4,7 +4,7 @@ import {useState, useEffect} from "react";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
 import {motion, AnimatePresence} from "framer-motion";
-import {Building, Menu, X} from "lucide-react";
+import {Menu, X} from "lucide-react";
 import {cn} from "@/lib/utils";
 import {Button} from "@/components/ui/button";
 import {SITE_TITLE} from "@/lib/constants";

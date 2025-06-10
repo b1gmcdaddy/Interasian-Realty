@@ -2,9 +2,8 @@
 
 import {motion} from "framer-motion";
 import {Bath, Bed, Calendar, Home, MapPin, Ruler} from "lucide-react";
-import {Property, PropertyType} from "@/lib/types";
-import {TYPE_ICONS} from "@/lib/constants";
-import {formatPrice, cn} from "@/lib/utils";
+import {Property} from "@/lib/types";
+import {formatPrice} from "@/lib/utils";
 import {Badge} from "@/components/ui/badge";
 import {fadeIn} from "@/lib/motion";
 

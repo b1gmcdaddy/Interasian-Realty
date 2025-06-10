@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import {motion} from "framer-motion";
 import {Property} from "@/lib/types";
 import {fadeIn, staggerContainer} from "@/lib/motion";
@@ -31,7 +30,7 @@ export default function RelatedProperties({
         {...staggerContainer()}
         viewport={{once: true}}>
         {properties.map((property) => (
-          <PropertyCard key={property.id} property={property} />
+          <PropertyCard key={property.listingId} property={property} />
         ))}
       </motion.div>
     </div>

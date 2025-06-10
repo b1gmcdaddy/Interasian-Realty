@@ -2,7 +2,7 @@
 
 import {motion} from "framer-motion";
 import {Check} from "lucide-react";
-import {fadeIn, staggerContainer} from "@/lib/motion";
+import {staggerContainer} from "@/lib/motion";
 
 interface PropertyFeaturesProps {
   features: string[];

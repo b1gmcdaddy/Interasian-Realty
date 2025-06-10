@@ -6,16 +6,9 @@ import {useForm} from "react-hook-form";
 import {z} from "zod";
 import {motion} from "framer-motion";
 import {Mail, Phone, Send} from "lucide-react";
-import {Agent} from "@/lib/types";
 import {Button} from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
+import {Avatar, AvatarImage} from "@/components/ui/avatar";
 import {
   Form,
   FormControl,

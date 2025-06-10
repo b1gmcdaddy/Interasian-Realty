@@ -9,9 +9,7 @@ import {AspectRatio} from "@/components/ui/aspect-ratio";
 import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
 import {Card, CardContent, CardFooter} from "@/components/ui/card";
-import {cn} from "@/lib/utils";
-import {fadeIn, hoverScale} from "@/lib/motion";
-import {SITE_API} from "@/lib/constants";
+import {hoverScale} from "@/lib/motion";
 
 interface PropertyCardProps {
   property: Property;

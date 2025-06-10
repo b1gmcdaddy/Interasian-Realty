@@ -1,13 +1,12 @@
 "use client";
 
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {motion} from "framer-motion";
 import {Separator} from "@/components/ui/separator";
 import {Property} from "@/lib/types";
 import {fadeIn} from "@/lib/motion";
 import PropertyGallery from "@/components/properties/property-gallery";
 import PropertyInfo from "@/components/properties/property-info";
-import PropertyFeatures from "@/components/properties/property-features";
 import PropertyContact from "@/components/properties/property-contact";
 import RelatedProperties from "@/components/properties/related-properties";
 
