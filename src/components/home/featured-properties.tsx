@@ -7,7 +7,7 @@ import {Property} from "@/lib/types";
 import {staggerContainer} from "@/lib/motion";
 import PropertyCard from "@/components/properties/property-card";
 import {Button} from "@/components/ui/button";
-import useGetAllListings from "@/api/listings/useGetAllListings";
+import useGetAllListings from "@/hooks/listings/useGetAllListings";
 
 interface FeaturedPropertiesProps {
   properties: Property[];

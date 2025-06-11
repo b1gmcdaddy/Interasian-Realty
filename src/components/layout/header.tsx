@@ -10,6 +10,7 @@ import {Button} from "@/components/ui/button";
 import {SITE_TITLE} from "@/lib/constants";
 import ThemeToggle from "./theme-toggle";
 import Image from "next/image";
+import {useAuth} from "@/context/auth-context";
 
 const links = [
   {href: "/", label: "Home"},
@@ -21,6 +22,7 @@ export default function Header() {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const {user, signOut} = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -68,9 +70,15 @@ export default function Header() {
 
             <div className="ml-4 flex items-center gap-2">
               <ThemeToggle />
-              <Button asChild>
-                <Link href="/contact">Get In Touch</Link>
-              </Button>
+              {user ? (
+                <Button variant="outline" onClick={signOut}>
+                  Sign Out
+                </Button>
+              ) : (
+                <Button asChild>
+                  <Link href="/contact">Get In Touch</Link>
+                </Button>
+              )}
             </div>
           </nav>
 
@@ -132,13 +140,22 @@ export default function Header() {
                 animate={{opacity: 1, y: 0}}
                 transition={{delay: 0.5}}
                 className="mt-4">
-                <Button asChild className="w-full">
-                  <Link
-                    href="/contact"
-                    onClick={() => setMobileMenuOpen(false)}>
-                    Get In Touch
-                  </Link>
-                </Button>
+                {user ? (
+                  <Button
+                    variant="outline"
+                    onClick={signOut}
+                    className="w-full">
+                    Sign Out
+                  </Button>
+                ) : (
+                  <Button asChild className="w-full">
+                    <Link
+                      href="/contact"
+                      onClick={() => setMobileMenuOpen(false)}>
+                      Get In Touch
+                    </Link>
+                  </Button>
+                )}
               </motion.div>
             </nav>
           </motion.div>

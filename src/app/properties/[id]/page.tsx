@@ -2,8 +2,8 @@
 
 import {notFound, useParams} from "next/navigation";
 import PropertyDetailClient from "@/components/properties/property-detail-client";
-import useGetListing from "@/api/listings/useGetListing";
-import useGetAllListings from "@/api/listings/useGetAllListings";
+import useGetListing from "@/hooks/listings/useGetListing";
+import useGetAllListings from "@/hooks/listings/useGetAllListings";
 import {Property} from "@/lib/types";
 
 export default function PropertyDetailPage() {

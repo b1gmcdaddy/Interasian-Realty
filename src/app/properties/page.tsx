@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import useGetAllListings from "@/api/listings/useGetAllListings";
+import useGetAllListings from "@/hooks/listings/useGetAllListings";
 
 export default function PropertiesPage() {
   const {

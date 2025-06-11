@@ -6,6 +6,9 @@ import Footer from "@/components/layout/footer";
 // import {Toaster} from "@/components/ui/toaster";
 import {SITE_TITLE, SITE_DESCRIPTION} from "@/lib/constants";
 import {Providers} from "./providers";
+import {AuthProvider} from "@/context/auth-context";
+import {ThemeProvider} from "@/components/theme-provider";
+import {cn} from "@/lib/utils";
 
 const inter = Inter({subsets: ["latin"]});
 
@@ -22,12 +25,20 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
       </head>
       <body className={inter.className}>
         <Providers>
-          <div className="flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
-          {/* <Toaster /> */}
+          <AuthProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange>
+              <div className="flex min-h-screen flex-col">
+                <Header />
+                <main className="flex-1">{children}</main>
+                <Footer />
+              </div>
+              {/* <Toaster /> */}
+            </ThemeProvider>
+          </AuthProvider>
         </Providers>
       </body>
     </html>

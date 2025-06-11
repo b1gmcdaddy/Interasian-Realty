@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/table";
 import {Button} from "../ui/button";
 import {Edit, Trash2} from "lucide-react";
-import useGetAllListings from "@/api/listings/useGetAllListings";
+import useGetAllListings from "@/hooks/listings/useGetAllListings";
 
 export default function ManageListingsTable() {
   const {data: listings, isLoading, isError} = useGetAllListings();
