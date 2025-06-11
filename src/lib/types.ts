@@ -12,8 +12,12 @@ export interface Property {
   propertyType: PropertyType | string;
   owner: string;
   images?: PropertyImage[];
+  creator: string;
 }
 
+export type CreateProperty = Omit<Property, "listingId" | "images"> & {
+  images?: PropertyImage[];
+};
 export type PropertyImage = {
   imageId: number;
   listingId: number;

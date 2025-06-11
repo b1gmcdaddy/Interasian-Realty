@@ -22,10 +22,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {Switch} from "@/components/ui/switch";
+import useCreateListing from "@/hooks/listings/useCreateListing";
+import {useAuth} from "@/context/auth-context";
+import {useQueryClient} from "@tanstack/react-query";
 
 const listingFormSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  location: z.string().min(1, "Location is required"),
+  title: z.string().min(4, "Title is required"),
+  location: z.string().min(4, "Location is required"),
   landArea: z.string().optional(),
   floorArea: z.string().optional(),
   bedRooms: z.number().int().optional(),
@@ -40,6 +43,7 @@ const listingFormSchema = z.object({
 type ListingFormValues = z.infer<typeof listingFormSchema>;
 
 export default function CreateListingForm() {
+  const {user} = useAuth();
   const form = useForm<ListingFormValues>({
     resolver: zodResolver(listingFormSchema),
     defaultValues: {
@@ -56,14 +60,26 @@ export default function CreateListingForm() {
       owner: "",
     },
   });
+  const {mutate: createListing, isPending} = useCreateListing();
+  const queryClient = useQueryClient();
 
   async function onSubmit(data: ListingFormValues) {
-    try {
-      // TODO: Implement your API call here
-      console.log(data);
-    } catch (error) {
-      console.error(error);
-    }
+    const payload = {
+      ...data,
+      landArea: data.landArea ? String(data.landArea) : undefined,
+      floorArea: data.floorArea ? String(data.floorArea) : undefined,
+      bedRooms: data.bedRooms ? Number(data.bedRooms) : undefined,
+      bathRooms: data.bathRooms ? Number(data.bathRooms) : undefined,
+      price: Number(data.price),
+      images: [],
+      creator: user?.email,
+    };
+
+    createListing(payload, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({queryKey: ["getAllListings"]});
+      },
+    });
   }
 
   return (

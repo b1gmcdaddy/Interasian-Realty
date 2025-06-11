@@ -11,8 +11,8 @@ export default async function LoginPage() {
     <div className="h-screen flex items-center justify-center relative overflow-hidden">
       {/* Grid pattern background */}
       <InteractiveGridPattern className="absolute inset-0 w-full h-full z-0" />
-      <div className="bg-white dark:bg-gray-900 shadow-xl rounded-xl p-8 w-full max-w-md flex flex-col items-center gap-6 border border-gray-200 dark:border-gray-800 z-10">
-        <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-2">
+      <div className="bg-white shadow-xl rounded-xl p-8 w-full max-w-md flex flex-col items-center gap-6 border border-gray-200 z-10">
+        <h1 className="text-2xl font-bold text-center text-gray-900 mb-2">
           {user ? "Welcome!" : "Admin Login"}
         </h1>
 
@@ -45,8 +45,8 @@ export default async function LoginPage() {
           </>
         ) : (
           <>
-            <div className="w-full flex flex-col items-center gap-4">
-              <p className="text-gray-600 dark:text-gray-300 text-center">
+            <div className="w-full flex flex-col items-center gap-4 dark:bg-white">
+              <p className="text-gray-600 dark:text-gray-700 text-center">
                 Please sign in with your Google account to access the admin
                 dashboard and manage listings.
               </p>

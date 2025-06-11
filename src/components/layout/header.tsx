@@ -71,11 +71,14 @@ export default function Header() {
             <div className="ml-4 flex items-center gap-2">
               <ThemeToggle />
               {user ? (
-                <Button variant="outline" onClick={signOut}>
+                <Button
+                  variant="outline"
+                  onClick={signOut}
+                  className="cursor-pointer">
                   Sign Out
                 </Button>
               ) : (
-                <Button asChild>
+                <Button asChild className="cursor-pointer">
                   <Link href="/contact">Get In Touch</Link>
                 </Button>
               )}
