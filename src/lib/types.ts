@@ -23,7 +23,6 @@ export type PropertyImage = {
   listingId: number;
   fileName: string;
   uploadDate: Date;
-  imageUrl: string;
 };
 
 export type PropertyType =

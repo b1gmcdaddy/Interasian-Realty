@@ -8,7 +8,7 @@ import {SITE_TITLE, SITE_DESCRIPTION} from "@/lib/constants";
 import {Providers} from "./providers";
 import {AuthProvider} from "@/context/auth-context";
 import {ThemeProvider} from "@/components/theme-provider";
-import {cn} from "@/lib/utils";
+import {Toaster} from "@/components/ui/sonner";
 
 const inter = Inter({subsets: ["latin"]});
 
@@ -33,6 +33,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
               disableTransitionOnChange>
               <div className="flex min-h-screen flex-col">
                 <Header />
+                <Toaster />
                 <main className="flex-1">{children}</main>
                 <Footer />
               </div>

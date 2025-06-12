@@ -28,8 +28,8 @@ export default function PropertyCard({property}: PropertyCardProps) {
           <AspectRatio ratio={16 / 9} className="bg-muted">
             <img
               src={
-                property.images?.[0]?.imageUrl
-                  ? property.images[0].imageUrl
+                property.images?.[0]?.fileName
+                  ? property.images[0].fileName
                   : "/logo.png"
               }
               alt={property.title}

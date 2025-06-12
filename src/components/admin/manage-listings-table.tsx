@@ -12,50 +12,120 @@ import {
 import {Button} from "../ui/button";
 import {Edit, Trash2} from "lucide-react";
 import useGetAllListings from "@/hooks/listings/useGetAllListings";
+import useDeleteListing from "@/hooks/listings/useDeleteListing";
+import {useQueryClient} from "@tanstack/react-query";
+import {toast} from "sonner";
+import {motion, AnimatePresence} from "framer-motion";
+import {useConfirmDialog} from "@/hooks/layouting/useConfirmationDialog";
+import {useState} from "react";
+import Loader from "../layout/loader";
 
 export default function ManageListingsTable() {
   const {data: listings, isLoading, isError} = useGetAllListings();
+  const {mutate: deleteListing} = useDeleteListing();
+  const queryClient = useQueryClient();
+  const {confirm, dialog} = useConfirmDialog();
+
+  const handleDeleteListing = async (listingId: number) => {
+    const confirmed = await confirm({
+      title: "Delete Listing?",
+      description:
+        "Are you sure you want to delete this listing? This action cannot be undone.",
+      confirmText: "Delete",
+      cancelText: "Cancel",
+    });
+    if (confirmed) {
+      deleteListing(listingId, {
+        onSuccess: () => {
+          toast.success("Listing deleted successfully");
+          queryClient.invalidateQueries({queryKey: ["getAllListings"]});
+        },
+      });
+    }
+  };
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Title</TableHead>
-          <TableHead>Price</TableHead>
-          <TableHead>Location</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead className="text-right">Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {listings?.map((listing) => (
-          <TableRow key={listing.listingId}>
-            <TableCell className="font-medium">{listing.title}</TableCell>
-            <TableCell>₱{listing.price.toLocaleString()}</TableCell>
-            <TableCell>{listing.location}</TableCell>
-            <TableCell>
-              <span
-                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                  listing.status == true
-                    ? "bg-green-100 text-green-800"
-                    : "bg-yellow-100 text-yellow-800"
-                }`}>
-                {listing.status == true ? "Active" : "Inactive"}
-              </span>
-            </TableCell>
-            <TableCell className="text-right">
-              <div className="flex justify-end gap-2">
-                <Button variant="ghost" size="icon">
-                  <Edit className="h-4 w-4" />
-                </Button>
-                <Button variant="ghost" size="icon">
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            </TableCell>
+    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+      {dialog}
+      <Table>
+        <TableHeader>
+          <TableRow className="bg-gray-50 dark:bg-gray-800">
+            <TableHead className="text-gray-700 dark:text-gray-200">
+              Title
+            </TableHead>
+            <TableHead className="text-gray-700 dark:text-gray-200">
+              Price
+            </TableHead>
+            <TableHead className="text-gray-700 dark:text-gray-200">
+              Location
+            </TableHead>
+            <TableHead className="text-gray-700 dark:text-gray-200">
+              Status
+            </TableHead>
+            <TableHead className="text-gray-700 dark:text-gray-200">
+              Action Buttons
+            </TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          <AnimatePresence>
+            {listings?.map((listing, idx) => (
+              <motion.tr
+                key={listing.listingId}
+                initial={{opacity: 0, y: 10}}
+                animate={{opacity: 1, y: 0}}
+                exit={{opacity: 0, y: -10}}
+                transition={{duration: 0.2, delay: idx * 0.03}}
+                className={`${
+                  idx % 2 === 0
+                    ? "bg-white dark:bg-gray-900"
+                    : "bg-gray-50 dark:bg-gray-800"
+                } group transition-colors hover:bg-blue-50 dark:hover:bg-blue-900`}>
+                <TableCell className="font-medium text-gray-900 dark:text-gray-100">
+                  {listing.title}
+                </TableCell>
+                <TableCell className="text-gray-900 dark:text-gray-100">
+                  ₱{listing.price.toLocaleString()}
+                </TableCell>
+                <TableCell className="text-gray-900 dark:text-gray-100">
+                  {listing.location}
+                </TableCell>
+                <TableCell>
+                  <span
+                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium transition-colors ${
+                      listing.status == true
+                        ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                        : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                    }`}>
+                    {listing.status == true ? "Active" : "Inactive"}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <div className="flex gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="transition-transform hover:scale-110 cursor-pointer">
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="transition-transform hover:scale-110 cursor-pointer"
+                      onClick={() => handleDeleteListing(listing.listingId)}>
+                      <Trash2 className="h-4 w-4 text-red-800" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </motion.tr>
+            ))}
+          </AnimatePresence>
+        </TableBody>
+      </Table>
+    </div>
   );
 }

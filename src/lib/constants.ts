@@ -1,9 +1,9 @@
 import {PropertyType} from "./types";
 
 export const SITE_API = process.env.NEXT_PUBLIC_SERVER_URL || "";
-export const SITE_TITLE = "Interasian Realty Services Inc.";
+export const SITE_TITLE = "Inter Asian Realty Services Inc.";
 export const SITE_DESCRIPTION =
-  "Find your dream property with Interasian Realty";
+  "Find your dream property with Inter Asian Realty";
 
 export const PRICE_RANGE = {
   min: 0,

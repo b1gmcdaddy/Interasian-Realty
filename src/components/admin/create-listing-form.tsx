@@ -23,8 +23,13 @@ import {
 } from "@/components/ui/select";
 import {Switch} from "@/components/ui/switch";
 import useCreateListing from "@/hooks/listings/useCreateListing";
+import useUploadListingImage from "@/hooks/listings/useUploadListingImage";
 import {useAuth} from "@/context/auth-context";
 import {useQueryClient} from "@tanstack/react-query";
+import {useRef, useState} from "react";
+import {ImagePlus, X} from "lucide-react";
+import {toast} from "sonner";
+import Loader from "../layout/loader";
 
 const listingFormSchema = z.object({
   title: z.string().min(4, "Title is required"),
@@ -34,7 +39,12 @@ const listingFormSchema = z.object({
   bedRooms: z.number().int().optional(),
   bathRooms: z.number().int().optional(),
   description: z.string().optional(),
-  price: z.number().min(0, "Price is required"),
+  price: z
+    .number()
+    .min(0, "Price is required")
+    .refine((val) => val !== undefined, {
+      message: "Price is required",
+    }),
   status: z.boolean(),
   propertyType: z.string().min(1, "Property type is required"),
   owner: z.string().min(1, "Owner is required"),
@@ -44,6 +54,8 @@ type ListingFormValues = z.infer<typeof listingFormSchema>;
 
 export default function CreateListingForm() {
   const {user} = useAuth();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const form = useForm<ListingFormValues>({
     resolver: zodResolver(listingFormSchema),
     defaultValues: {
@@ -54,16 +66,58 @@ export default function CreateListingForm() {
       bedRooms: undefined,
       bathRooms: undefined,
       description: "",
-      price: 0,
+      price: undefined,
       status: true,
       propertyType: "",
       owner: "",
     },
   });
   const {mutate: createListing, isPending} = useCreateListing();
+  const {mutate: uploadImages, isPending: isUploading} =
+    useUploadListingImage();
   const queryClient = useQueryClient();
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+
+    const maxFiles = 10;
+    const maxFileSize = 8 * 1024 * 1024;
+
+    const validFiles = files.slice(0, maxFiles).filter((file) => {
+      if (file.size > maxFileSize) {
+        toast.error(`File ${file.name} is too large: ${file.size} bytes`);
+        return false;
+      }
+      return true;
+    });
+
+    const newPreviewUrls: string[] = [];
+    for (const file of validFiles) {
+      try {
+        const url = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+        newPreviewUrls.push(url);
+      } catch (error) {
+        console.error(`Error reading ${file.name} for preview:`, error);
+      }
+    }
+
+    setPreviewUrls(newPreviewUrls);
+  };
+
+  const removeFile = (index: number) => {
+    setPreviewUrls((prev) => prev.filter((_, i) => i !== index));
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
   async function onSubmit(data: ListingFormValues) {
+    const files = fileInputRef.current?.files;
     const payload = {
       ...data,
       landArea: data.landArea ? String(data.landArea) : undefined,
@@ -76,8 +130,34 @@ export default function CreateListingForm() {
     };
 
     createListing(payload, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({queryKey: ["getAllListings"]});
+      onSuccess: (response) => {
+        if (files && files.length > 0 && response.data?.listingId) {
+          uploadImages(
+            {
+              listingId: response.data.listingId,
+              files: Array.from(files),
+            },
+            {
+              onSuccess: () => {
+                queryClient.invalidateQueries({queryKey: ["getAllListings"]});
+                form.reset();
+                setPreviewUrls([]);
+                if (fileInputRef.current) {
+                  fileInputRef.current.value = "";
+                }
+                toast.success("Listing created successfully");
+              },
+            }
+          );
+        } else {
+          queryClient.invalidateQueries({queryKey: ["getAllListings"]});
+          form.reset();
+          toast.success("Listing created successfully");
+        }
+      },
+      onError: (error) => {
+        console.error(error);
+        toast.error("Failed to create listing");
       },
     });
   }
@@ -116,11 +196,21 @@ export default function CreateListingForm() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="house">House</SelectItem>
-                    <SelectItem value="apartment">Apartment</SelectItem>
-                    <SelectItem value="condo">Condominium</SelectItem>
-                    <SelectItem value="land">Land</SelectItem>
-                    <SelectItem value="commercial">Commercial</SelectItem>
+                    <SelectItem value="house" className="cursor-pointer">
+                      House
+                    </SelectItem>
+                    <SelectItem value="apartment" className="cursor-pointer">
+                      Apartment
+                    </SelectItem>
+                    <SelectItem value="condo" className="cursor-pointer">
+                      Condominium
+                    </SelectItem>
+                    <SelectItem value="land" className="cursor-pointer">
+                      Land
+                    </SelectItem>
+                    <SelectItem value="commercial" className="cursor-pointer">
+                      Commercial
+                    </SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -167,21 +257,35 @@ export default function CreateListingForm() {
             name="price"
             render={({field}) => (
               <FormItem>
-                <FormLabel>Price</FormLabel>
-                <FormControl>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                      ₱
-                    </span>
-                    <Input
-                      type="number"
-                      placeholder="0.00"
-                      className="pl-8"
-                      {...field}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </div>
-                </FormControl>
+                <FormLabel>
+                  Price
+                  <span className="text-xs text-gray-500">
+                    (No need to include commas or periods)
+                  </span>
+                </FormLabel>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                    ₱
+                  </span>
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    placeholder="0"
+                    className="pl-8 pr-12 w-full border rounded h-10"
+                    value={field.value === undefined ? "" : field.value}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (/^\d*$/.test(value) || value === "") {
+                        field.onChange(
+                          value === "" ? undefined : Number(value)
+                        );
+                      }
+                    }}
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none select-none">
+                    .00
+                  </span>
+                </div>
                 <FormMessage />
               </FormItem>
             )}
@@ -257,6 +361,42 @@ export default function CreateListingForm() {
           </div>
         </div>
 
+        {/* img upload */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">Property Images</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {previewUrls.map((url, index) => (
+              <div key={index} className="relative group">
+                <img
+                  src={url}
+                  alt={`Preview ${index + 1}`}
+                  className="w-full h-32 object-cover rounded-lg"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeFile(index)}
+                  className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+            <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50">
+              <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                <ImagePlus className="w-8 h-8 mb-2 text-gray-500" />
+                <p className="text-sm text-gray-500">Click to upload</p>
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                className="hidden"
+                multiple
+                accept="image/*"
+                onChange={handleFileChange}
+              />
+            </label>
+          </div>
+        </div>
+
         {/* Additional Information Section */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Additional Information</h3>
@@ -295,9 +435,14 @@ export default function CreateListingForm() {
           />
         </div>
 
-        <Button type="submit" className="w-full">
-          Create Listing
+        <Button type="submit" className="w-full" disabled={isPending}>
+          {isPending ? "Creating..." : "Create Listing"}
         </Button>
+        {(isPending || isUploading) && (
+          <>
+            <Loader />
+          </>
+        )}
       </form>
     </Form>
   );

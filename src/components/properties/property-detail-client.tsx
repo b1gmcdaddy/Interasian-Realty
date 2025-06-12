@@ -21,7 +21,7 @@ export default function PropertyDetailClient({
 }: PropertyDetailClientProps) {
   const [property] = useState<Property>(initialProperty);
 
-  const imageUrls = property.images?.map((image) => image.imageUrl || "");
+  const imageUrls = property.images?.map((image) => image.fileName || "");
 
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">

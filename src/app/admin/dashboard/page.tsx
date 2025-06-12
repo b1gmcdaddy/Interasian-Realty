@@ -30,7 +30,9 @@ export default function AdminDashboard() {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[600px] max-h-[90vh] flex flex-col [&>button]:cursor-pointer">
               <DialogHeader>
-                <DialogTitle>Add New Listing</DialogTitle>
+                <DialogTitle className="text-center">
+                  Add New Listing
+                </DialogTitle>
               </DialogHeader>
               <div className="overflow-y-auto flex-1 pr-2">
                 <ListingForm />

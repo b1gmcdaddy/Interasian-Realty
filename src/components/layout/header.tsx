@@ -68,6 +68,19 @@ export default function Header() {
               </Link>
             ))}
 
+            {user && (
+              <Link
+                href="/admin/dashboard"
+                className={cn(
+                  "text-sm font-medium transition-colors hover:text-primary",
+                  pathname === "/admin/dashboard"
+                    ? "text-primary"
+                    : "text-muted-foreground"
+                )}>
+                Dashboard
+              </Link>
+            )}
+
             <div className="ml-4 flex items-center gap-2">
               <ThemeToggle />
               {user ? (
