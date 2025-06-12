@@ -23,8 +23,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-// import {useToast} from "@/hooks/use-toast";
 import {Building2, Mail, MapPin, Phone} from "lucide-react";
+import useSendEmail from "@/hooks/smtp/useSendEmail";
+import {toast} from "sonner";
+import Loader from "@/components/layout/loader";
 
 const contactFormSchema = z.object({
   name: z.string().min(2, {message: "Name must be at least 2 characters"}),
@@ -41,7 +43,7 @@ const contactFormSchema = z.object({
 type ContactFormValues = z.infer<typeof contactFormSchema>;
 
 export default function ContactPage() {
-  //   const {toast} = useToast();
+  const {mutate: sendEmail, isPending} = useSendEmail();
 
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
@@ -54,14 +56,15 @@ export default function ContactPage() {
     },
   });
 
-  const onSubmit = (data: ContactFormValues) => {
-    console.log("Contact form data:", data);
-
-    // toast({
-    //   title: "Message Sent",
-    //   description: "Thank you for your message. We'll get back to you soon!",
-    // });
-
+  const onSubmit = async (data: ContactFormValues) => {
+    await sendEmail(data, {
+      onSuccess: () => {
+        toast.success("Email sent successfully");
+      },
+      onError: () => {
+        toast.error("Failed to send email");
+      },
+    });
     form.reset();
   };
 
@@ -108,7 +111,7 @@ export default function ContactPage() {
                 <Phone className="w-5 h-5 mt-1 text-primary" />
                 <div>
                   <h3 className="font-medium">Phone</h3>
-                  <p className="text-muted-foreground">0917 546 8814</p>
+                  <p className="text-muted-foreground">0917 677 7190</p>
                 </div>
               </div>
 
@@ -116,7 +119,9 @@ export default function ContactPage() {
                 <Mail className="w-5 h-5 mt-1 text-primary" />
                 <div>
                   <h3 className="font-medium">Email</h3>
-                  <p className="text-muted-foreground">person@gmail.com</p>
+                  <p className="text-muted-foreground">
+                    connietangpuziars@gmail.com
+                  </p>
                 </div>
               </div>
             </div>
@@ -223,6 +228,7 @@ export default function ContactPage() {
           </Card>
         </div>
       </motion.div>
+      {isPending && <Loader />}
     </div>
   );
 }

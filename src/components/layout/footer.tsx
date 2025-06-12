@@ -133,7 +133,9 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-muted-foreground" />
-                <span className="text-muted-foreground">email@gmail.com</span>
+                <span className="text-muted-foreground">
+                  connietangpuziars@gmail.com
+                </span>
               </li>
             </ul>
           </motion.div>

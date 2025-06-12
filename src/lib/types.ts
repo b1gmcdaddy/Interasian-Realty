@@ -58,6 +58,13 @@ export const PROPERTY_TYPES: {value: PropertyType | "all"; label: string}[] = [
   {value: "commercial", label: "Commercial"},
 ];
 
+export interface Email {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
 export type ApiResponse<T = undefined> = {
   success: boolean;
   message: string[] | string;
