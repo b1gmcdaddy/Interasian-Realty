@@ -23,7 +23,9 @@ export default function AdminDashboard() {
     <ProtectedRoute>
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold">Manage Listings</h1>
+          <h1 className="text-2xl font-bold dark:text-black">
+            Manage Listings
+          </h1>
           <Dialog>
             <DialogTrigger asChild>
               <Button className="cursor-pointer">Add New Listing</Button>

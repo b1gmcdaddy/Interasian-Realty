@@ -1,26 +1,63 @@
 "use client";
 
-import {useState} from "react";
-import Link from "next/link";
+import {useState, useEffect, useRef} from "react";
 import {motion} from "framer-motion";
-import {Search} from "lucide-react";
+import {Search, Eye} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {PRICE_RANGE, FEATURED_CITIES} from "@/lib/constants";
-import {PROPERTY_TYPES} from "@/lib/types";
+import {useRouter} from "next/navigation";
+import useGetAllListings from "@/hooks/listings/useGetAllListings";
+import {Property} from "@/lib/types";
 import {cn} from "@/lib/utils";
+import {formatPrice} from "@/lib/utils";
+import Loader from "../layout/loader";
 
 export default function Hero() {
-  const [propertyType, setPropertyType] = useState("all");
-  const [city, setCity] = useState("any");
-  const [priceRange, setPriceRange] = useState(`0-${PRICE_RANGE.max}`);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showResults, setShowResults] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const searchRef = useRef<HTMLFormElement>(null);
+  const router = useRouter();
+
+  const {data: listings} = useGetAllListings({
+    searchQuery: searchQuery || undefined,
+    pageSize: 5,
+  });
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
+        setShowResults(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      setLoading(true);
+      router.push(
+        `/properties?search=${encodeURIComponent(searchQuery.trim())}`
+      );
+    }
+  };
+
+  const handleResultClick = (listing: Property) => {
+    setLoading(true);
+    router.push(`/properties/${listing.listingId}`);
+    setShowResults(false);
+  };
+
+  const handleViewAll = () => {
+    router.push("/properties");
+  };
+
+  if (loading) return <Loader />;
 
   return (
     <section className="relative h-[90vh] min-h-[600px] w-full flex items-center justify-center overflow-hidden">
@@ -56,88 +93,65 @@ export default function Hero() {
               "bg-background/95 backdrop-blur-md rounded-lg shadow-lg p-4 md:p-6",
               "dark:bg-background/90"
             )}>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-1">
-                  Property Type
-                </label>
-                <Select defaultValue="all" onValueChange={setPropertyType}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="All Properties" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PROPERTY_TYPES.map((type) => (
-                      <SelectItem key={type.value} value={type.value}>
-                        {type.label}
-                      </SelectItem>
+            <form onSubmit={handleSearch} className="relative" ref={searchRef}>
+              <div className="relative">
+                <Input
+                  type="text"
+                  placeholder="Search by property name or location..."
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setShowResults(true);
+                  }}
+                  className="w-full h-12 pl-4 pr-12 text-lg text-black dark:text-white"
+                />
+                <Button
+                  type="submit"
+                  size="icon"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer">
+                  <Search className="h-5 w-5" />
+                </Button>
+              </div>
+
+              <div className="mt-6 flex justify-center">
+                <Button
+                  size="lg"
+                  className="w-full md:w-auto md:px-8 cursor-pointer"
+                  onClick={handleViewAll}
+                  type="button">
+                  <Eye className="mr-2 h-4 w-4" />
+                  View All Properties
+                </Button>
+              </div>
+
+              {showResults &&
+                searchQuery &&
+                listings &&
+                listings.length > 0 && (
+                  <div className="absolute w-full mt-2 bg-white dark:bg-gray-900 rounded-lg shadow-lg max-h-[300px] overflow-y-auto z-50">
+                    {listings.map((listing) => (
+                      <div
+                        key={listing.listingId}
+                        onClick={() => handleResultClick(listing)}
+                        className="p-4 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer border-b last:border-b-0">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h3 className="font-medium text-gray-900 dark:text-white">
+                              {listing.title}
+                            </h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-300">
+                              {listing.location}
+                            </p>
+                          </div>
+                          <span className="text-sm font-medium text-gray-900 dark:text-white">
+                            {formatPrice(listing.price)}
+                          </span>
+                        </div>
+                      </div>
                     ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-1">
-                  Location
-                </label>
-                <Select value={city} onValueChange={setCity}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Any Location" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="any">Any Location</SelectItem>
-                    {FEATURED_CITIES.map((city) => (
-                      <SelectItem key={city} value={city}>
-                        {city}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-1">
-                  Price Range
-                </label>
-                <Select value={priceRange} onValueChange={setPriceRange}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Any Price" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value={`0-${PRICE_RANGE.max}`}>
-                      Any Price
-                    </SelectItem>
-                    <SelectItem value="0-500000">Up to $500,000</SelectItem>
-                    <SelectItem value="500000-1000000">
-                      PHP 500,000 - PHP 1,000,000
-                    </SelectItem>
-                    <SelectItem value="1000000-2000000">
-                      PHP 1,000,000 - PHP 2,000,000
-                    </SelectItem>
-                    <SelectItem value={`2000000-PHP {PRICE_RANGE.max}`}>
-                      PHP 2,000,000+
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="xl:col-span-1 md:col-span-2 lg:col-span-1">
-                <label className="block text-sm font-medium text-foreground mb-1">
-                  Keywords
-                </label>
-                <div className="relative">
-                  <Input placeholder="Pool, garage, etc." />
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-6 flex justify-center">
-              <Button asChild size="lg" className="w-full md:w-auto md:px-8">
-                <Link href="/properties">
-                  <Search className="mr-2 h-4 w-4" />
-                  Search Properties
-                </Link>
-              </Button>
-            </div>
+                  </div>
+                )}
+            </form>
           </motion.div>
         </motion.div>
       </div>

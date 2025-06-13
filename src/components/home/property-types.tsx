@@ -7,6 +7,8 @@ import {Home, Building2, Building, Map, Trees, Store} from "lucide-react";
 import {cn} from "@/lib/utils";
 import {fadeIn, staggerContainer} from "@/lib/motion";
 import {Card} from "@/components/ui/card";
+import useGetPropertyTypeCounts from "@/hooks/listings/useGetPropertyTypeCounts";
+import Loader from "../layout/loader";
 
 interface PropertyTypeCardProps {
   icon: LucideIcon;
@@ -36,7 +38,9 @@ const PropertyTypeCard = ({
             <Icon className="h-8 w-8" />
           </div>
           <h3 className="font-semibold text-xl mb-1">{title}</h3>
-          <p className="text-muted-foreground">{count} Properties</p>
+          <p className="text-muted-foreground">
+            {count} {count === 1 ? "Property" : "Properties"}
+          </p>
 
           <div
             className={cn(
@@ -51,34 +55,18 @@ const PropertyTypeCard = ({
 };
 
 export default function PropertyTypes() {
+  const {data: typeCounts, isLoading} = useGetPropertyTypeCounts();
+
   const propertyTypes = [
-    {icon: Home, title: "Houses", count: 25, href: "/properties?type=house"},
-    {
-      icon: Building2,
-      title: "Condos",
-      count: 18,
-      href: "/properties?type=condo",
-    },
-    {
-      icon: Building,
-      title: "Apartments",
-      count: 12,
-      href: "/properties?type=apartment",
-    },
-    {icon: Map, title: "Land", count: 8, href: "/properties?type=land"},
-    {
-      icon: Trees,
-      title: "House & Lot",
-      count: 15,
-      href: "/properties?type=house-and-lot",
-    },
-    {
-      icon: Store,
-      title: "Commercial",
-      count: 10,
-      href: "/properties?type=commercial",
-    },
+    {icon: Home, title: "Houses", type: "house"},
+    {icon: Building2, title: "Condos", type: "condo"},
+    {icon: Building, title: "Apartments", type: "apartment"},
+    {icon: Map, title: "Land", type: "land"},
+    {icon: Trees, title: "House & Lot", type: "house-and-lot"},
+    {icon: Store, title: "Commercial", type: "commercial"},
   ];
+
+  if (isLoading) return <Loader />;
 
   return (
     <div className="container mx-auto px-4">
@@ -97,16 +85,25 @@ export default function PropertyTypes() {
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4"
         {...staggerContainer()}
         viewport={{once: true}}>
-        {propertyTypes.map((type, index) => (
-          <motion.div
-            key={type.title}
-            initial={{opacity: 0, y: 20}}
-            whileInView={{opacity: 1, y: 0}}
-            transition={{duration: 0.5, delay: index * 0.1}}
-            viewport={{once: true}}>
-            <PropertyTypeCard {...type} />
-          </motion.div>
-        ))}
+        {propertyTypes.map((type, index) => {
+          const count =
+            typeCounts?.find((tc) => tc.propertyType === type.type)?.count ?? 0;
+
+          return (
+            <motion.div
+              key={type.title}
+              initial={{opacity: 0, y: 20}}
+              whileInView={{opacity: 1, y: 0}}
+              transition={{duration: 0.5, delay: index * 0.1}}
+              viewport={{once: true}}>
+              <PropertyTypeCard
+                {...type}
+                count={count}
+                href={`/properties?type=${type.type}`}
+              />
+            </motion.div>
+          );
+        })}
       </motion.div>
     </div>
   );

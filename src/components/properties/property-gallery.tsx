@@ -39,7 +39,7 @@ export default function PropertyGallery({images, title}: PropertyGalleryProps) {
                 animate={{opacity: 1}}
                 exit={{opacity: 0}}
                 transition={{duration: 0.3}}
-                src={images[currentImageIndex]}
+                src={images[currentImageIndex] || "/logo.png"}
                 alt={`${title} - Image ${currentImageIndex + 1}`}
                 className="w-full object-cover rounded-lg h-[400px] md:h-[500px] lg:h-[600px]"
               />
@@ -53,7 +53,7 @@ export default function PropertyGallery({images, title}: PropertyGalleryProps) {
                 }}
                 className="bg-black/30 text-white p-2 rounded-full hover:bg-black/50 transition-colors"
                 aria-label="Previous image">
-                <ChevronLeft className="h-6 w-6" />
+                <ChevronLeft className="h-6 w-6 cursor-pointer" />
               </button>
 
               <DialogTrigger asChild>
@@ -61,7 +61,7 @@ export default function PropertyGallery({images, title}: PropertyGalleryProps) {
                   onClick={(e) => e.stopPropagation()}
                   className="bg-black/30 text-white p-2 rounded-full hover:bg-black/50 transition-colors"
                   aria-label="View fullscreen">
-                  <Maximize2 className="h-6 w-6" />
+                  <Maximize2 className="h-6 w-6 cursor-pointer" />
                 </button>
               </DialogTrigger>
 
@@ -72,7 +72,7 @@ export default function PropertyGallery({images, title}: PropertyGalleryProps) {
                 }}
                 className="bg-black/30 text-white p-2 rounded-full hover:bg-black/50 transition-colors"
                 aria-label="Next image">
-                <ChevronRight className="h-6 w-6" />
+                <ChevronRight className="h-6 w-6 cursor-pointer" />
               </button>
             </div>
           </div>
@@ -116,7 +116,7 @@ export default function PropertyGallery({images, title}: PropertyGalleryProps) {
               index === currentImageIndex ? "ring-2 ring-primary" : ""
             )}>
             <img
-              src={image}
+              src={image || "/logo.png"}
               alt={`${title} - Thumbnail ${index + 1}`}
               className="h-full w-full object-cover"
             />

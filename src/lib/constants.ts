@@ -15,12 +15,21 @@ export const BEDROOM_OPTIONS = [1, 2, 3, 4, 5, "6+"];
 export const BATHROOM_OPTIONS = [1, 2, 3, 4, "5+"];
 
 export const FEATURED_CITIES = [
-  "New York",
-  "Los Angeles",
-  "Miami",
-  "Chicago",
-  "San Francisco",
-  "Seattle",
+  "Cebu",
+  "Mandaue",
+  "Lapu-Lapu",
+  "Consolacion",
+  "Liloan",
+  "Compostela",
+  "Danao",
+  "Talisay",
+  "Minglanilla",
+  "Naga",
+  "Balamban",
+  "Bogo",
+  "Moalboal",
+  "Oslob",
+  "Ronda",
 ];
 
 export const TYPE_ICONS: Record<PropertyType | "all", string> = {

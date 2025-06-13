@@ -176,7 +176,7 @@ export default function ContactPage() {
                         <FormItem>
                           <FormLabel>Phone (optional)</FormLabel>
                           <FormControl>
-                            <Input placeholder="(xxx) xxx-xxxx" {...field} />
+                            <Input placeholder="09xxxxxxxxx" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

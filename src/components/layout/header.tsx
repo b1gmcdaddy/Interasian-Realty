@@ -48,9 +48,12 @@ export default function Header() {
               src={"/logo.png"}
               width={40}
               height={40}
-              alt="Inter Asian Logo"
+              alt="Inter Asian Realty Services Inc."
             />
-            <span>{SITE_TITLE}</span>
+            <span className="hidden md:inline">{SITE_TITLE}</span>
+            <span className="md:hidden text-sm">
+              Inter Asian Realty Services Inc.
+            </span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-6">

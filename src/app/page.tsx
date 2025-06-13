@@ -16,7 +16,7 @@ export default function Home() {
         <PropertyTypes />
       </section>
 
-      <section className="bg-gradient-to-r from-blue-600 to-indigo-700 py-16">
+      <section className="bg-[#D6B588] py-16">
         <CallToAction />
       </section>
     </div>

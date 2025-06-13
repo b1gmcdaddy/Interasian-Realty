@@ -40,6 +40,7 @@ export interface PropertyFilter {
   maxPrice?: number;
   minBedrooms?: number;
   minBathrooms?: number;
+  city?: string;
 }
 
 export interface PropertySort {
@@ -54,7 +55,7 @@ export const PROPERTY_TYPES: {value: PropertyType | "all"; label: string}[] = [
   {value: "condo", label: "Condominium"},
   {value: "apartment", label: "Apartment"},
   {value: "townhouse", label: "Townhouse"},
-  {value: "land", label: "Land/Lot"},
+  {value: "land", label: "Land"},
   {value: "commercial", label: "Commercial"},
 ];
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, {useState} from "react";
 import {
   Table,
   TableBody,
@@ -17,14 +17,16 @@ import {useQueryClient} from "@tanstack/react-query";
 import {toast} from "sonner";
 import {motion, AnimatePresence} from "framer-motion";
 import {useConfirmDialog} from "@/hooks/layouting/useConfirmationDialog";
-import {useState} from "react";
 import Loader from "../layout/loader";
+import EditListingForm from "./edit-listing-form";
 
 export default function ManageListingsTable() {
   const {data: listings, isLoading, isError} = useGetAllListings();
   const {mutate: deleteListing} = useDeleteListing();
   const queryClient = useQueryClient();
   const {confirm, dialog} = useConfirmDialog();
+  const [selectedListing, setSelectedListing] = useState<any>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const handleDeleteListing = async (listingId: number) => {
     const confirmed = await confirm({
@@ -42,6 +44,11 @@ export default function ManageListingsTable() {
         },
       });
     }
+  };
+
+  const handleEditListing = (listing: any) => {
+    setSelectedListing(listing);
+    setIsEditDialogOpen(true);
   };
 
   if (isLoading) {
@@ -72,60 +79,82 @@ export default function ManageListingsTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          <AnimatePresence>
-            {listings?.map((listing, idx) => (
-              <motion.tr
-                key={listing.listingId}
-                initial={{opacity: 0, y: 10}}
-                animate={{opacity: 1, y: 0}}
-                exit={{opacity: 0, y: -10}}
-                transition={{duration: 0.2, delay: idx * 0.03}}
-                className={`${
-                  idx % 2 === 0
-                    ? "bg-white dark:bg-gray-900"
-                    : "bg-gray-50 dark:bg-gray-800"
-                } group transition-colors hover:bg-blue-50 dark:hover:bg-blue-900`}>
-                <TableCell className="font-medium text-gray-900 dark:text-gray-100">
-                  {listing.title}
-                </TableCell>
-                <TableCell className="text-gray-900 dark:text-gray-100">
-                  ₱{listing.price.toLocaleString()}
-                </TableCell>
-                <TableCell className="text-gray-900 dark:text-gray-100">
-                  {listing.location}
-                </TableCell>
-                <TableCell>
-                  <span
-                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium transition-colors ${
-                      listing.status == true
-                        ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                        : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-                    }`}>
-                    {listing.status == true ? "Active" : "Inactive"}
-                  </span>
-                </TableCell>
-                <TableCell>
-                  <div className="flex gap-1">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="transition-transform hover:scale-110 cursor-pointer">
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="transition-transform hover:scale-110 cursor-pointer"
-                      onClick={() => handleDeleteListing(listing.listingId)}>
-                      <Trash2 className="h-4 w-4 text-red-800" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </motion.tr>
-            ))}
-          </AnimatePresence>
+          {listings && listings.length > 0 ? (
+            <AnimatePresence>
+              {listings.map((listing, idx) => (
+                <motion.tr
+                  key={listing.listingId}
+                  initial={{opacity: 0, y: 10}}
+                  animate={{opacity: 1, y: 0}}
+                  exit={{opacity: 0, y: -10}}
+                  transition={{duration: 0.2, delay: idx * 0.03}}
+                  className={`${
+                    idx % 2 === 0
+                      ? "bg-white dark:bg-gray-900"
+                      : "bg-gray-50 dark:bg-gray-800"
+                  } group transition-colors hover:bg-blue-50 dark:hover:bg-blue-900`}>
+                  <TableCell className="font-medium text-gray-900 dark:text-gray-100">
+                    {listing.title}
+                  </TableCell>
+                  <TableCell className="text-gray-900 dark:text-gray-100">
+                    ₱{listing.price.toLocaleString()}
+                  </TableCell>
+                  <TableCell className="text-gray-900 dark:text-gray-100">
+                    {listing.location}
+                  </TableCell>
+                  <TableCell>
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium transition-colors ${
+                        listing.status == true
+                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                          : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                      }`}>
+                      {listing.status == true ? "Active" : "Inactive"}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="transition-transform hover:scale-110 cursor-pointer"
+                        onClick={() => handleEditListing(listing)}>
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="transition-transform hover:scale-110 cursor-pointer"
+                        onClick={() => handleDeleteListing(listing.listingId)}>
+                        <Trash2 className="h-4 w-4 text-red-800" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </motion.tr>
+              ))}
+            </AnimatePresence>
+          ) : (
+            <TableRow>
+              <TableCell
+                colSpan={5}
+                className="h-12 text-center text-gray-500 dark:text-gray-400">
+                No listings available
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
+
+      {selectedListing && (
+        <EditListingForm
+          listing={selectedListing}
+          isOpen={isEditDialogOpen}
+          onClose={() => {
+            setIsEditDialogOpen(false);
+            setSelectedListing(null);
+          }}
+        />
+      )}
     </div>
   );
 }

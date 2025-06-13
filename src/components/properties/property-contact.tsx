@@ -19,13 +19,18 @@ import {
 } from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
 import {Textarea} from "@/components/ui/textarea";
-// import {useToast} from "@/hooks/use-toast";
 import {fadeIn} from "@/lib/motion";
+import useSendEmail from "@/hooks/smtp/useSendEmail";
+import {toast} from "sonner";
+import Loader from "@/components/layout/loader";
 
 const contactFormSchema = z.object({
   name: z.string().min(2, {message: "Name must be at least 2 characters"}),
   email: z.string().email({message: "Please enter a valid email address"}),
   phone: z.string().optional(),
+  subject: z
+    .string()
+    .min(5, {message: "Subject must be at least 5 characters"}),
   message: z
     .string()
     .min(10, {message: "Message must be at least 10 characters"}),
@@ -42,8 +47,7 @@ export default function PropertyContact({
   owner,
   propertyTitle,
 }: PropertyContactProps) {
-  // const {toast} = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const {mutate: sendEmail, isPending} = useSendEmail();
 
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
@@ -51,38 +55,27 @@ export default function PropertyContact({
       name: "",
       email: "",
       phone: "",
+      subject: `Interested in ${propertyTitle}`,
       message: `I'm interested in ${propertyTitle}. Please contact me with more information.`,
     },
   });
 
-  const onSubmit = (data: ContactFormValues) => {
-    setIsSubmitting(true);
-
-    // In a real app, this would send data to your API
-    setTimeout(() => {
-      console.log("Contact form data:", data);
-
-      // toast({
-      //   title: "Message Sent",
-      //   description: `Your message has been sent to ${agent.name}. They will contact you shortly.`,
-      // });
-
-      form.reset({
-        name: "",
-        email: "",
-        phone: "",
-        message: `I'm interested in ${propertyTitle}. Please contact me with more information.`,
-      });
-
-      setIsSubmitting(false);
-    }, 1000);
+  const onSubmit = async (data: ContactFormValues) => {
+    await sendEmail(data, {
+      onSuccess: () => {
+        toast.success("Email sent successfully");
+      },
+      onError: () => {
+        toast.error("Failed to send email");
+      },
+    });
+    form.reset({
+      name: "",
+      email: "",
+      phone: "",
+      message: `I'm interested in ${propertyTitle}. Please contact me with more information.`,
+    });
   };
-
-  // const initials = owner.name
-  //   .split(" ")
-  //   .map((name) => name[0])
-  //   .join("")
-  //   .toUpperCase();
 
   return (
     <motion.div {...fadeIn("left")} viewport={{once: true}}>
@@ -95,22 +88,22 @@ export default function PropertyContact({
           <div className="flex items-center gap-4 mb-6">
             <Avatar className="h-16 w-16">
               <AvatarImage
-                src={"/avatar.png"}
+                src={"/femaleAvatar.png"}
                 alt={"Interasian Realty Services Inc."}
               />
               {/* <AvatarFallback>{initials}</AvatarFallback> */}
             </Avatar>
 
             <div>
-              <h3 className="font-medium text-lg">{owner}</h3>
+              <h3 className="font-medium text-lg">Connie Tangpuz</h3>
               <div className="text-sm text-muted-foreground space-y-1 mt-1">
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-3">
                   <Mail className="h-3.5 w-3.5" />
-                  {/* <span>{agent.email}</span> */}
+                  <span>connietangpuziars@gmail.com</span>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-3">
                   <Phone className="h-3.5 w-3.5" />
-                  {/* <span>{agent.phone}</span> */}
+                  <span>+639176777190</span>
                 </div>
               </div>
             </div>
@@ -153,7 +146,7 @@ export default function PropertyContact({
                   <FormItem>
                     <FormLabel>Phone (optional)</FormLabel>
                     <FormControl>
-                      <Input placeholder="(xxx) xxx-xxxx" {...field} />
+                      <Input placeholder="09xxxxxxxxx" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -178,8 +171,11 @@ export default function PropertyContact({
                 )}
               />
 
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? (
+              <Button
+                type="submit"
+                className="w-full cursor-pointer"
+                disabled={isPending}>
+                {isPending ? (
                   <span className="flex items-center gap-2">
                     <span className="h-4 w-4 rounded-full border-2 border-current border-r-transparent animate-spin" />
                     Sending...

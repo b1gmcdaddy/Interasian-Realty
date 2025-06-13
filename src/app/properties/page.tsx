@@ -1,9 +1,14 @@
 "use client";
 
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {motion} from "framer-motion";
 import {ArrowUpDown} from "lucide-react";
-import {PropertyFilter, PropertySort, Property} from "@/lib/types";
+import {
+  PropertyFilter,
+  PropertySort,
+  Property,
+  PropertyType,
+} from "@/lib/types";
 import {fadeIn, staggerContainer} from "@/lib/motion";
 import PropertyCard from "@/components/properties/property-card";
 import PropertyFilters from "@/components/properties/property-filters";
@@ -17,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import useGetAllListings from "@/hooks/listings/useGetAllListings";
+import {useSearchParams} from "next/navigation";
 
 export default function PropertiesPage() {
   const {
@@ -31,9 +37,48 @@ export default function PropertiesPage() {
     direction: "asc",
   });
 
+  const searchParams = useSearchParams();
+  const type = searchParams.get("type");
+  const city = searchParams.get("city");
+  const price = searchParams.get("price");
+  let minPrice: number | undefined, maxPrice: number | undefined;
+  if (price) {
+    const [min, max] = price.split("-").map(Number);
+    minPrice = min;
+    maxPrice = max;
+  }
+
+  // Sync filters with query params
+  useEffect(() => {
+    setFilters((prev) => ({
+      ...prev,
+      type: (type as PropertyType) || "all",
+      minPrice: minPrice,
+      maxPrice: maxPrice,
+      city: city || "any",
+    }));
+  }, [type, city, minPrice, maxPrice]);
+
   // Filter and sort properties
   const filteredListings = listings
     ?.filter((listing: Property) => {
+      if (!listing.status) return false;
+      if (
+        filters.type &&
+        filters.type !== "all" &&
+        listing.propertyType !== filters.type
+      )
+        return false;
+      if (
+        filters.city &&
+        filters.city !== "any" &&
+        listing.location !== filters.city
+      )
+        return false;
+      if (filters.minPrice !== undefined && listing.price < filters.minPrice)
+        return false;
+      if (filters.maxPrice !== undefined && listing.price > filters.maxPrice)
+        return false;
       // Search term filter
       if (
         searchTerm &&

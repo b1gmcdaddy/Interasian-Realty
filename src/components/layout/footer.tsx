@@ -38,7 +38,7 @@ export default function Footer() {
             </p>
             <div className="flex items-center gap-4">
               <a
-                href="#"
+                href="https://www.facebook.com/cebuxrealty"
                 className="text-muted-foreground hover:text-foreground transition-colors"
                 aria-label="Facebook">
                 <Facebook className="h-5 w-5" />
@@ -79,13 +79,7 @@ export default function Footer() {
                   Properties
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/admin"
-                  className="text-muted-foreground hover:text-foreground transition-colors">
-                  Admin
-                </Link>
-              </li>
+
               <li>
                 <Link
                   href="/contact"
@@ -129,7 +123,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-muted-foreground" />
-                <span className="text-muted-foreground">0917 546 8814</span>
+                <span className="text-muted-foreground">0917 677 7190</span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-muted-foreground" />

@@ -426,6 +426,7 @@ export default function CreateListingForm() {
                 </div>
                 <FormControl>
                   <Switch
+                    className="cursor-pointer"
                     checked={field.value}
                     onCheckedChange={field.onChange}
                   />
@@ -435,7 +436,10 @@ export default function CreateListingForm() {
           />
         </div>
 
-        <Button type="submit" className="w-full" disabled={isPending}>
+        <Button
+          type="submit"
+          className="w-full cursor-pointer"
+          disabled={isPending}>
           {isPending ? "Creating..." : "Create Listing"}
         </Button>
         {(isPending || isUploading) && (

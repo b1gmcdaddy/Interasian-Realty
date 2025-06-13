@@ -36,7 +36,7 @@ export default function PropertyCard({property}: PropertyCardProps) {
               className="object-cover w-full h-full transition-transform duration-500 hover:scale-105"
             />
           </AspectRatio>
-          <div className="absolute top-2 right-2">
+          {/* <div className="absolute top-2 right-2">
             <Button
               variant="ghost"
               size="icon"
@@ -44,7 +44,7 @@ export default function PropertyCard({property}: PropertyCardProps) {
               aria-label="Save property">
               <Heart className="h-4 w-4" />
             </Button>
-          </div>
+          </div> */}
           <Badge
             className="absolute top-2 left-2 uppercase"
             variant="secondary">
