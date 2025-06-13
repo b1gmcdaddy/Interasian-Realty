@@ -2,6 +2,26 @@ import Hero from "@/components/home/hero";
 import FeaturedProperties from "@/components/home/featured-properties";
 import PropertyTypes from "@/components/home/property-types";
 import CallToAction from "@/components/home/call-to-action";
+import type {Metadata} from "next";
+
+export const metadata: Metadata = {
+  title: "Find Your Dream Property in Cebu",
+  description:
+    "Discover the perfect property in Cebu with Inter Asian Realty Services. Browse our extensive collection of houses, condos, apartments, and more.",
+  openGraph: {
+    title: "Find Your Dream Property in Cebu",
+    description:
+      "Discover the perfect property in Cebu with Inter Asian Realty Services. Browse our extensive collection of houses, condos, apartments, and more.",
+    images: [
+      {
+        url: "https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg",
+        width: 1200,
+        height: 630,
+        alt: "Inter Asian Realty Services - Find Your Dream Property",
+      },
+    ],
+  },
+};
 
 export default function Home() {
   return (

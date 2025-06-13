@@ -40,7 +40,7 @@ export default function PropertyGallery({images, title}: PropertyGalleryProps) {
                 exit={{opacity: 0}}
                 transition={{duration: 0.3}}
                 src={images[currentImageIndex] || "/logo.png"}
-                alt={`${title} - Image ${currentImageIndex + 1}`}
+                alt={`${title} - Inter Asian Realty Services Inc.`}
                 className="w-full object-cover rounded-lg h-[400px] md:h-[500px] lg:h-[600px]"
               />
             </AnimatePresence>
@@ -81,7 +81,7 @@ export default function PropertyGallery({images, title}: PropertyGalleryProps) {
             <div className="relative">
               <img
                 src={images[currentImageIndex]}
-                alt={`${title} - Image ${currentImageIndex + 1}`}
+                alt={`${title} - Inter Asian Realty Services Inc.`}
                 className="w-full object-contain max-h-[80vh]"
               />
 
@@ -117,7 +117,7 @@ export default function PropertyGallery({images, title}: PropertyGalleryProps) {
             )}>
             <img
               src={image || "/logo.png"}
-              alt={`${title} - Thumbnail ${index + 1}`}
+              alt={`${title} - Inter Asian Realty Services Inc.`}
               className="h-full w-full object-cover"
             />
           </motion.button>

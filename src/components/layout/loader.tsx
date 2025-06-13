@@ -6,7 +6,7 @@ export default function Loader() {
     <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/40">
       <Image
         src="/logo.png"
-        alt="Loading"
+        alt={"Inter Asian Realty Services Inc."}
         width={80}
         height={80}
         className="animate-spin mb-4"

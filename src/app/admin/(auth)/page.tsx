@@ -21,7 +21,7 @@ export default async function LoginPage() {
             {user.image && (
               <Image
                 src={user.image}
-                alt={user.name || "User Avatar"}
+                alt={"Inter Asian Realty Services Inc."}
                 width={80}
                 height={80}
                 className="rounded-full border-2 border-blue-400 shadow-md mb-2"
@@ -61,7 +61,7 @@ export default async function LoginPage() {
                   className="w-full py-2 px-4 bg-black text-white font-semibold rounded-lg shadow transition-transform duration-200 ease-in-out flex items-center justify-center gap-2 cursor-pointer hover:scale-105 hover:shadow-lg">
                   <Image
                     src="/gmail.png"
-                    alt="Google Logo"
+                    alt={"Inter Asian Realty Services Inc."}
                     width={20}
                     height={20}
                     decoding="async"

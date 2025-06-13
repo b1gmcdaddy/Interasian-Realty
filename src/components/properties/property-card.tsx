@@ -32,7 +32,7 @@ export default function PropertyCard({property}: PropertyCardProps) {
                   ? property.images[0].fileName
                   : "/logo.png"
               }
-              alt={property.title}
+              alt={`Inter Asian Realty Services Inc. - ${property.title}`}
               className="object-cover w-full h-full transition-transform duration-500 hover:scale-105"
             />
           </AspectRatio>

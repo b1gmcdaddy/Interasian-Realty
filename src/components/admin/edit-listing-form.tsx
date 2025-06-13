@@ -430,7 +430,7 @@ export default function EditListingForm({
                   <div key={index} className="relative group">
                     <img
                       src={url}
-                      alt={`Preview ${index + 1}`}
+                      alt={"Inter Asian Realty Services Inc."}
                       className="w-full h-32 object-cover rounded-lg"
                     />
                     <button
