@@ -104,59 +104,13 @@ export default function EditListingForm({
         propertyType: listing.propertyType,
         owner: listing.owner,
       });
-      // Set existing images as preview URLs
-      if (listing.images && listing.images.length > 0) {
-        setPreviewUrls(listing.images.map((img: any) => img.fileName));
-      }
     }
   }, [listing, form]);
 
   const {mutate: updateListing, isPending} = useUpdateListing();
-  const {mutate: uploadImages, isPending: isUploading} =
-    useUploadListingImage();
   const queryClient = useQueryClient();
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-
-    const maxFiles = 10;
-    const maxFileSize = 8 * 1024 * 1024;
-
-    const validFiles = files.slice(0, maxFiles).filter((file) => {
-      if (file.size > maxFileSize) {
-        toast.error(`File ${file.name} is too large: ${file.size} bytes`);
-        return false;
-      }
-      return true;
-    });
-
-    const newPreviewUrls: string[] = [];
-    for (const file of validFiles) {
-      try {
-        const url = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result as string);
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        });
-        newPreviewUrls.push(url);
-      } catch (error) {
-        console.error(`Error reading ${file.name} for preview:`, error);
-      }
-    }
-
-    setPreviewUrls((prev) => [...prev, ...newPreviewUrls]);
-  };
-
-  const removeFile = (index: number) => {
-    setPreviewUrls((prev) => prev.filter((_, i) => i !== index));
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
-
   async function onSubmit(data: ListingFormValues) {
-    const files = fileInputRef.current?.files;
     const payload = {
       ...data,
       landArea: data.landArea ? String(data.landArea) : undefined,
@@ -164,33 +118,16 @@ export default function EditListingForm({
       bedRooms: data.bedRooms ? Number(data.bedRooms) : undefined,
       bathRooms: data.bathRooms ? Number(data.bathRooms) : undefined,
       price: Number(data.price),
-      images: [],
       creator: user?.email,
     };
 
     updateListing(
       {listingId: listing.listingId, data: payload},
       {
-        onSuccess: (response) => {
-          if (files && files.length > 0) {
-            uploadImages(
-              {
-                listingId: listing.listingId,
-                files: Array.from(files),
-              },
-              {
-                onSuccess: () => {
-                  queryClient.invalidateQueries({queryKey: ["getAllListings"]});
-                  onClose();
-                  toast.success("Listing updated successfully");
-                },
-              }
-            );
-          } else {
-            queryClient.invalidateQueries({queryKey: ["getAllListings"]});
-            onClose();
-            toast.success("Listing updated successfully");
-          }
+        onSuccess: () => {
+          queryClient.invalidateQueries({queryKey: ["getAllListings"]});
+          onClose();
+          toast.success("Listing updated successfully");
         },
         onError: (error) => {
           console.error(error);
@@ -422,42 +359,6 @@ export default function EditListingForm({
               </div>
             </div>
 
-            {/* img upload */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Property Images</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {previewUrls.map((url, index) => (
-                  <div key={index} className="relative group">
-                    <img
-                      src={url}
-                      alt={"Inter Asian Realty Services Inc."}
-                      className="w-full h-32 object-cover rounded-lg"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removeFile(index)}
-                      className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
-                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50">
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    <ImagePlus className="w-8 h-8 mb-2 text-gray-500" />
-                    <p className="text-sm text-gray-500">Click to upload</p>
-                  </div>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    className="hidden"
-                    multiple
-                    accept="image/*"
-                    onChange={handleFileChange}
-                  />
-                </label>
-              </div>
-            </div>
-
             {/* Additional Information Section */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Additional Information</h3>
@@ -512,7 +413,7 @@ export default function EditListingForm({
                 Cancel
               </Button>
             </div>
-            {(isPending || isUploading) && <Loader />}
+            {isPending && <Loader />}
           </form>
         </Form>
       </DialogContent>

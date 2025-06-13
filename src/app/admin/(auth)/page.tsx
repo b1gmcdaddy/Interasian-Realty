@@ -9,7 +9,6 @@ export default async function LoginPage() {
 
   return (
     <div className="h-screen flex items-center justify-center relative overflow-hidden">
-      {/* Grid pattern background */}
       <InteractiveGridPattern className="absolute inset-0 w-full h-full z-0" />
       <div className="bg-white shadow-xl rounded-xl p-8 w-full max-w-md flex flex-col items-center gap-6 border border-gray-200 z-10">
         <h1 className="text-2xl font-bold text-center text-gray-900 mb-2">

@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {Button} from "../ui/button";
-import {Edit, Trash2} from "lucide-react";
+import {Edit, Trash2, Image} from "lucide-react";
 import useGetAllListings from "@/hooks/listings/useGetAllListings";
 import useDeleteListing from "@/hooks/listings/useDeleteListing";
 import {useQueryClient} from "@tanstack/react-query";
@@ -19,6 +19,8 @@ import {motion, AnimatePresence} from "framer-motion";
 import {useConfirmDialog} from "@/hooks/layouting/useConfirmationDialog";
 import Loader from "../layout/loader";
 import EditListingForm from "./edit-listing-form";
+import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
+import EditImagesModal from "./edit-images-modal";
 
 export default function ManageListingsTable() {
   const {data: listings, isLoading, isError} = useGetAllListings();
@@ -27,6 +29,7 @@ export default function ManageListingsTable() {
   const {confirm, dialog} = useConfirmDialog();
   const [selectedListing, setSelectedListing] = useState<any>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isImagesModalOpen, setIsImagesModalOpen] = useState(false);
 
   const handleDeleteListing = async (listingId: number) => {
     const confirmed = await confirm({
@@ -114,20 +117,53 @@ export default function ManageListingsTable() {
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="transition-transform hover:scale-110 cursor-pointer"
-                        onClick={() => handleEditListing(listing)}>
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="transition-transform hover:scale-110 cursor-pointer"
-                        onClick={() => handleDeleteListing(listing.listingId)}>
-                        <Trash2 className="h-4 w-4 text-red-800" />
-                      </Button>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="transition-transform hover:scale-110 cursor-pointer"
+                            onClick={() => handleEditListing(listing)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Edit Listing</p>
+                        </TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="transition-transform hover:scale-110 cursor-pointer"
+                            onClick={() => {
+                              setSelectedListing(listing);
+                              setIsImagesModalOpen(true);
+                            }}>
+                            <Image className="h-4 w-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Edit Images</p>
+                        </TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="transition-transform hover:scale-110 cursor-pointer"
+                            onClick={() =>
+                              handleDeleteListing(listing.listingId)
+                            }>
+                            <Trash2 className="h-4 w-4 text-red-800" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Delete Listing</p>
+                        </TooltipContent>
+                      </Tooltip>
                     </div>
                   </TableCell>
                 </motion.tr>
@@ -151,6 +187,17 @@ export default function ManageListingsTable() {
           isOpen={isEditDialogOpen}
           onClose={() => {
             setIsEditDialogOpen(false);
+            setSelectedListing(null);
+          }}
+        />
+      )}
+
+      {selectedListing && (
+        <EditImagesModal
+          listing={selectedListing}
+          isOpen={isImagesModalOpen}
+          onClose={() => {
+            setIsImagesModalOpen(false);
             setSelectedListing(null);
           }}
         />
