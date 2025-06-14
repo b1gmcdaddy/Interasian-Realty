@@ -22,12 +22,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {Switch} from "@/components/ui/switch";
-import useUploadListingImage from "@/hooks/listings/useUploadListingImage";
 import useUpdateListing from "@/hooks/listings/useUpdateListing";
 import {useAuth} from "@/context/auth-context";
 import {useQueryClient} from "@tanstack/react-query";
 import {useRef, useState, useEffect} from "react";
-import {ImagePlus, X} from "lucide-react";
 import {toast} from "sonner";
 import Loader from "../layout/loader";
 import {
@@ -111,10 +109,14 @@ export default function EditListingForm({
   const queryClient = useQueryClient();
 
   async function onSubmit(data: ListingFormValues) {
+    function addSqm(val?: string) {
+      if (!val) return undefined;
+      return val.trim().endsWith("sqm") ? val.trim() : val.trim() + " sqm";
+    }
     const payload = {
       ...data,
-      landArea: data.landArea ? String(data.landArea) : undefined,
-      floorArea: data.floorArea ? String(data.floorArea) : undefined,
+      landArea: addSqm(data.landArea),
+      floorArea: addSqm(data.floorArea),
       bedRooms: data.bedRooms ? Number(data.bedRooms) : undefined,
       bathRooms: data.bathRooms ? Number(data.bathRooms) : undefined,
       price: Number(data.price),
@@ -122,7 +124,7 @@ export default function EditListingForm({
     };
 
     updateListing(
-      {listingId: listing.listingId, data: payload},
+      {id: listing.id, data: payload},
       {
         onSuccess: () => {
           queryClient.invalidateQueries({queryKey: ["getAllListings"]});
@@ -176,32 +178,32 @@ export default function EditListingForm({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="house" className="cursor-pointer">
+                        <SelectItem value="House" className="cursor-pointer">
                           House
                         </SelectItem>
                         <SelectItem
-                          value="house-and-lot"
+                          value="House with Lot"
                           className="cursor-pointer">
                           House with Lot
                         </SelectItem>
                         <SelectItem
-                          value="apartment"
+                          value="Apartment"
                           className="cursor-pointer">
                           Apartment
                         </SelectItem>
-                        <SelectItem value="condo" className="cursor-pointer">
+                        <SelectItem value="Condo" className="cursor-pointer">
                           Condominium
                         </SelectItem>
-                        <SelectItem value="land" className="cursor-pointer">
+                        <SelectItem value="Land" className="cursor-pointer">
                           Land
                         </SelectItem>
                         <SelectItem
-                          value="townhouse"
+                          value="Townhouse"
                           className="cursor-pointer">
                           Townhouse
                         </SelectItem>
                         <SelectItem
-                          value="commercial"
+                          value="Commercial"
                           className="cursor-pointer">
                           Commercial
                         </SelectItem>
@@ -297,7 +299,7 @@ export default function EditListingForm({
                     <FormItem>
                       <FormLabel>Land Area (sqm)</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="0" {...field} />
+                        <Input type="text" placeholder="0" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -310,7 +312,7 @@ export default function EditListingForm({
                     <FormItem>
                       <FormLabel>Floor Area (sqm)</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="0" {...field} />
+                        <Input type="text" placeholder="0" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

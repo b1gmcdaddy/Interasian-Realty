@@ -4,7 +4,7 @@ import {PropertyImage} from "@/lib/types";
 import {useMutation} from "@tanstack/react-query";
 
 type UploadImagesParams = {
-  listingId: number;
+  listingId: string;
   files: File[];
 };
 

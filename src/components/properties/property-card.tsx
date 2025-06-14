@@ -60,7 +60,7 @@ export default function PropertyCard({property}: PropertyCardProps) {
         <CardContent className="pt-4 flex-grow">
           <h3 className="font-semibold text-lg mb-2 line-clamp-1">
             <Link
-              href={`/properties/${property.listingId}`}
+              href={`/properties/${property.id}`}
               className="hover:underline">
               {property.title}
             </Link>
@@ -104,7 +104,7 @@ export default function PropertyCard({property}: PropertyCardProps) {
 
         <CardFooter className="border-t pt-4">
           <Button asChild variant="secondary" className="w-full">
-            <Link href={`/properties/${property.listingId}`}>View Details</Link>
+            <Link href={`/properties/${property.id}`}>View Details</Link>
           </Button>
         </CardFooter>
       </Card>

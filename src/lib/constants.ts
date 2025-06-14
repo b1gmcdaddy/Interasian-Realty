@@ -14,31 +14,13 @@ export const PRICE_RANGE = {
 export const BEDROOM_OPTIONS = [1, 2, 3, 4, 5, "6+"];
 export const BATHROOM_OPTIONS = [1, 2, 3, 4, "5+"];
 
-export const FEATURED_CITIES = [
-  "Cebu",
-  "Mandaue",
-  "Lapu-Lapu",
-  "Consolacion",
-  "Liloan",
-  "Compostela",
-  "Danao",
-  "Talisay",
-  "Minglanilla",
-  "Naga",
-  "Balamban",
-  "Bogo",
-  "Moalboal",
-  "Oslob",
-  "Ronda",
-];
-
 export const TYPE_ICONS: Record<PropertyType | "all", string> = {
   all: "home",
-  house: "home",
-  condo: "building-2",
-  apartment: "building",
-  townhouse: "home",
-  land: "map",
-  commercial: "store",
-  "house-and-lot": "trees",
+  House: "home",
+  Condo: "building-2",
+  Apartment: "building",
+  Townhouse: "home",
+  Land: "map",
+  Commercial: "store",
+  "House with Lot": "trees",
 };

@@ -30,7 +30,7 @@ export default function RelatedProperties({
         {...staggerContainer()}
         viewport={{once: true}}>
         {properties.map((property) => (
-          <PropertyCard key={property.listingId} property={property} />
+          <PropertyCard key={property.id} property={property} />
         ))}
       </motion.div>
     </div>

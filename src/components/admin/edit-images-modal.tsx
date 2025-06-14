@@ -20,7 +20,7 @@ import {useConfirmDialog} from "@/hooks/layouting/useConfirmationDialog";
 
 interface EditImagesModalProps {
   listing: {
-    listingId: number;
+    id: string;
     images?: PropertyImage[];
   };
   isOpen: boolean;
@@ -56,7 +56,7 @@ export default function EditImagesModal({
     setPreviewUrls((prev) => [...prev, ...urls]);
 
     uploadImages(
-      {listingId: listing.listingId, files},
+      {listingId: listing.id, files},
       {
         onSuccess: (response) => {
           const newImages = response.data || [];
@@ -75,7 +75,7 @@ export default function EditImagesModal({
     );
   };
 
-  const handleDeleteImage = async (imageId: number) => {
+  const handleDeleteImage = async (id: string) => {
     const confirmed = await confirm({
       title: "Delete Image?",
       description:
@@ -85,12 +85,10 @@ export default function EditImagesModal({
     });
     if (confirmed) {
       deleteImage(
-        {listingId: listing.listingId, imageId},
+        {listingId: listing.id, imageId: id},
         {
           onSuccess: () => {
-            setLocalImages((prev) =>
-              prev.filter((img) => img.imageId !== imageId)
-            );
+            setLocalImages((prev) => prev.filter((img) => img.id !== id));
             queryClient.invalidateQueries({queryKey: ["getAllListings"]});
             toast.success("Image deleted successfully");
           },
@@ -144,7 +142,7 @@ export default function EditImagesModal({
             {/* Image Grid */}
             <div className="grid grid-cols-3 gap-4">
               {localImages.map((image) => (
-                <div key={image.imageId} className="relative group">
+                <div key={image.id} className="relative group">
                   <Image
                     src={image.fileName}
                     alt="Property"
@@ -156,7 +154,7 @@ export default function EditImagesModal({
                     variant="destructive"
                     size="icon"
                     className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-                    onClick={() => handleDeleteImage(image.imageId)}>
+                    onClick={() => handleDeleteImage(image.id)}>
                     <X className="h-4 w-4" />
                   </Button>
                 </div>

@@ -3,7 +3,7 @@ import {ApiResponse} from "@/lib/types";
 import {Property} from "@/lib/types";
 import {useMutation} from "@tanstack/react-query";
 
-export const deleteListingAsync = async (listingId: number) => {
+export const deleteListingAsync = async (listingId: string) => {
   const response = await fetch(`${SITE_API}/Listing/${listingId}`, {
     method: "DELETE",
     headers: {

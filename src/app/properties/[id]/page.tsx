@@ -8,25 +8,23 @@ import {Property} from "@/lib/types";
 
 export default function PropertyDetailPage() {
   const params = useParams();
-  const listingId = parseInt(params.id as string);
+  const listingId = params.id as string;
 
   const {
     data: listing,
     isLoading: isListingLoading,
     error: listingError,
-  } = useGetListing(listingId, {enabled: !isNaN(listingId)});
+  } = useGetListing(listingId, {enabled: !!listingId});
 
   const {data: allListings, isLoading: isAllListingsLoading} =
     useGetAllListings();
 
-  // Check loading state first
   if (isListingLoading) {
     return (
       <div className="container mx-auto p-8">Loading property details...</div>
     );
   }
 
-  // Then check for errors
   if (listingError) {
     return (
       <div className="container mx-auto p-8">
@@ -43,7 +41,7 @@ export default function PropertyDetailPage() {
     allListings
       ?.filter(
         (p: Property) =>
-          p.listingId !== listingId && p.propertyType === listing?.propertyType
+          p.id !== listingId && p.propertyType === listing?.propertyType
       )
       .slice(0, 3) || [];
 

@@ -37,7 +37,7 @@ export default function PropertyInfo({property}: PropertyInfoProps) {
             <Badge variant="outline" className="uppercase">
               {property?.propertyType.replace("-", " ")}
             </Badge>
-            <Badge variant="secondary">ID: {property.listingId}</Badge>
+            <Badge variant="secondary">ID: {property.id}</Badge>
           </div>
           <h1 className="text-3xl font-bold mb-2">{property?.title}</h1>
           <div className="flex items-center text-muted-foreground">

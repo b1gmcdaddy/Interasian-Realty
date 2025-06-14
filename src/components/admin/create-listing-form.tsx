@@ -117,11 +117,15 @@ export default function CreateListingForm() {
   };
 
   async function onSubmit(data: ListingFormValues) {
+    function addSqm(val?: string) {
+      if (!val) return undefined;
+      return val.trim().endsWith("sqm") ? val.trim() : val.trim() + " sqm";
+    }
     const files = fileInputRef.current?.files;
     const payload = {
       ...data,
-      landArea: data.landArea ? String(data.landArea) : undefined,
-      floorArea: data.floorArea ? String(data.floorArea) : undefined,
+      landArea: addSqm(data.landArea),
+      floorArea: addSqm(data.floorArea),
       bedRooms: data.bedRooms ? Number(data.bedRooms) : undefined,
       bathRooms: data.bathRooms ? Number(data.bathRooms) : undefined,
       price: Number(data.price),
@@ -131,10 +135,10 @@ export default function CreateListingForm() {
 
     createListing(payload, {
       onSuccess: (response) => {
-        if (files && files.length > 0 && response.data?.listingId) {
+        if (files && files.length > 0 && response.data?.id) {
           uploadImages(
             {
-              listingId: response.data.listingId,
+              listingId: response.data.id,
               files: Array.from(files),
             },
             {
@@ -196,19 +200,24 @@ export default function CreateListingForm() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="house" className="cursor-pointer">
+                    <SelectItem value="House" className="cursor-pointer">
                       House
                     </SelectItem>
-                    <SelectItem value="apartment" className="cursor-pointer">
+                    <SelectItem
+                      value="House with Lot"
+                      className="cursor-pointer">
+                      House with Lot
+                    </SelectItem>
+                    <SelectItem value="Apartment" className="cursor-pointer">
                       Apartment
                     </SelectItem>
-                    <SelectItem value="condo" className="cursor-pointer">
+                    <SelectItem value="Condo" className="cursor-pointer">
                       Condominium
                     </SelectItem>
-                    <SelectItem value="land" className="cursor-pointer">
+                    <SelectItem value="Land" className="cursor-pointer">
                       Land
                     </SelectItem>
-                    <SelectItem value="commercial" className="cursor-pointer">
+                    <SelectItem value="Commercial" className="cursor-pointer">
                       Commercial
                     </SelectItem>
                   </SelectContent>
@@ -301,9 +310,14 @@ export default function CreateListingForm() {
               name="landArea"
               render={({field}) => (
                 <FormItem>
-                  <FormLabel>Land Area (sqm)</FormLabel>
+                  <FormLabel>
+                    Land Area
+                    <span className="text-xs text-gray-500">
+                      (Just input number)
+                    </span>
+                  </FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="0" {...field} />
+                    <Input type="text" placeholder="0" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -314,9 +328,14 @@ export default function CreateListingForm() {
               name="floorArea"
               render={({field}) => (
                 <FormItem>
-                  <FormLabel>Floor Area (sqm)</FormLabel>
+                  <FormLabel>
+                    Floor Area
+                    <span className="text-xs text-gray-500">
+                      (Just input number)
+                    </span>
+                  </FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="0" {...field} />
+                    <Input type="text" placeholder="0" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

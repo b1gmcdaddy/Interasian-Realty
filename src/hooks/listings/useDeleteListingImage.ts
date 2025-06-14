@@ -3,8 +3,8 @@ import {ApiResponse} from "@/lib/types";
 import {useMutation} from "@tanstack/react-query";
 
 type DeleteImageParams = {
-  listingId: number;
-  imageId: number;
+  listingId: string;
+  imageId: string;
 };
 
 export const deleteListingImageAsync = async ({

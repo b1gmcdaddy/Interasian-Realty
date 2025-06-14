@@ -3,7 +3,7 @@ import {SITE_API} from "@/lib/constants";
 import {ApiResponse, Property} from "@/lib/types";
 
 interface UpdateListingPayload {
-  listingId: number;
+  id: string;
   data: {
     title: string;
     location: string;
@@ -20,8 +20,8 @@ interface UpdateListingPayload {
   };
 }
 
-const updateListing = async ({listingId, data}: UpdateListingPayload) => {
-  const response = await fetch(`${SITE_API}/Listing/${listingId}`, {
+const updateListing = async ({id, data}: UpdateListingPayload) => {
+  const response = await fetch(`${SITE_API}/Listing/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

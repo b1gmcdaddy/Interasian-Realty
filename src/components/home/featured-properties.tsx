@@ -40,7 +40,7 @@ export default function FeaturedProperties() {
         {...staggerContainer()}
         viewport={{once: true}}>
         {featuredListings?.map((listing) => (
-          <PropertyCard key={listing.listingId} property={listing} />
+          <PropertyCard key={listing.id} property={listing} />
         ))}
       </motion.div>
 

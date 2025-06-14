@@ -49,7 +49,7 @@ export default function Hero() {
 
   const handleResultClick = (listing: Property) => {
     setLoading(true);
-    router.push(`/properties/${listing.listingId}`);
+    router.push(`/properties/${listing.id}`);
     setShowResults(false);
   };
 
@@ -131,7 +131,7 @@ export default function Hero() {
                   <div className="absolute w-full mt-2 bg-white dark:bg-gray-900 rounded-lg shadow-lg max-h-[300px] overflow-y-auto z-50">
                     {listings.map((listing) => (
                       <div
-                        key={listing.listingId}
+                        key={listing.id}
                         onClick={() => handleResultClick(listing)}
                         className="p-4 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer border-b last:border-b-0">
                         <div className="flex justify-between items-start">

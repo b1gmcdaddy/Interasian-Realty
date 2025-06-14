@@ -58,11 +58,11 @@ export default function PropertyTypes() {
   const {data: typeCounts, isLoading} = useGetPropertyTypeCounts();
 
   const propertyTypes = [
-    {icon: Home, title: "Houses", type: "house"},
-    {icon: Building2, title: "Condos", type: "condo"},
-    {icon: Building, title: "Apartments", type: "apartment"},
-    {icon: Map, title: "Land", type: "land"},
-    {icon: Trees, title: "House & Lot", type: "house-and-lot"},
+    {icon: Home, title: "Houses", type: "House"},
+    {icon: Building2, title: "Condos", type: "Condo"},
+    {icon: Building, title: "Apartments", type: "Apartment"},
+    {icon: Map, title: "Land", type: "Land"},
+    {icon: Trees, title: "Houses with Lot", type: "House with Lot"},
     {icon: Store, title: "Commercial", type: "commercial"},
   ];
 

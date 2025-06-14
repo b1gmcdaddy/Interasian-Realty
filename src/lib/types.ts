@@ -1,5 +1,5 @@
 export interface Property {
-  listingId: number;
+  id: string;
   title: string;
   location: string;
   landArea?: string;
@@ -15,24 +15,24 @@ export interface Property {
   creator: string;
 }
 
-export type CreateProperty = Omit<Property, "listingId" | "images"> & {
+export type CreateProperty = Omit<Property, "id" | "images"> & {
   images?: PropertyImage[];
 };
 export type PropertyImage = {
-  imageId: number;
-  listingId: number;
+  id: string;
+  listingId: string;
   fileName: string;
   uploadDate: Date;
 };
 
 export type PropertyType =
-  | "house"
-  | "condo"
-  | "apartment"
-  | "townhouse"
-  | "land"
-  | "commercial"
-  | "house-and-lot";
+  | "House"
+  | "Condo"
+  | "Apartment"
+  | "Townhouse"
+  | "Land"
+  | "Commercial"
+  | "House with Lot";
 
 export interface PropertyFilter {
   type?: PropertyType | "all";
@@ -50,13 +50,13 @@ export interface PropertySort {
 
 export const PROPERTY_TYPES: {value: PropertyType | "all"; label: string}[] = [
   {value: "all", label: "All Properties"},
-  {value: "house", label: "House"},
-  {value: "house-and-lot", label: "House and Lot"},
-  {value: "condo", label: "Condominium"},
-  {value: "apartment", label: "Apartment"},
-  {value: "townhouse", label: "Townhouse"},
-  {value: "land", label: "Land"},
-  {value: "commercial", label: "Commercial"},
+  {value: "House", label: "House"},
+  {value: "House with Lot", label: "House and Lot"},
+  {value: "Condo", label: "Condominium"},
+  {value: "Apartment", label: "Apartment"},
+  {value: "Townhouse", label: "Townhouse"},
+  {value: "Land", label: "Land"},
+  {value: "Commercial", label: "Commercial"},
 ];
 
 export interface Email {

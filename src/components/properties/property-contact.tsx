@@ -22,7 +22,6 @@ import {Textarea} from "@/components/ui/textarea";
 import {fadeIn} from "@/lib/motion";
 import useSendEmail from "@/hooks/smtp/useSendEmail";
 import {toast} from "sonner";
-import Loader from "@/components/layout/loader";
 
 const contactFormSchema = z.object({
   name: z.string().min(2, {message: "Name must be at least 2 characters"}),

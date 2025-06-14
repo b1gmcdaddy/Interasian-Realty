@@ -31,7 +31,7 @@ export default function ManageListingsTable() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isImagesModalOpen, setIsImagesModalOpen] = useState(false);
 
-  const handleDeleteListing = async (listingId: number) => {
+  const handleDeleteListing = async (id: string) => {
     const confirmed = await confirm({
       title: "Delete Listing?",
       description:
@@ -40,7 +40,7 @@ export default function ManageListingsTable() {
       cancelText: "Cancel",
     });
     if (confirmed) {
-      deleteListing(listingId, {
+      deleteListing(id, {
         onSuccess: () => {
           toast.success("Listing deleted successfully");
           queryClient.invalidateQueries({queryKey: ["getAllListings"]});
@@ -86,7 +86,7 @@ export default function ManageListingsTable() {
             <AnimatePresence>
               {listings.map((listing, idx) => (
                 <motion.tr
-                  key={listing.listingId}
+                  key={listing.id}
                   initial={{opacity: 0, y: 10}}
                   animate={{opacity: 1, y: 0}}
                   exit={{opacity: 0, y: -10}}
@@ -154,9 +154,7 @@ export default function ManageListingsTable() {
                             variant="ghost"
                             size="icon"
                             className="transition-transform hover:scale-110 cursor-pointer"
-                            onClick={() =>
-                              handleDeleteListing(listing.listingId)
-                            }>
+                            onClick={() => handleDeleteListing(listing.id)}>
                             <Trash2 className="h-4 w-4 text-red-800" />
                           </Button>
                         </TooltipTrigger>

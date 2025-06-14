@@ -3,7 +3,7 @@ import {ApiResponse} from "@/lib/types";
 import {Property} from "@/lib/types";
 import {type QueryKey, useQuery} from "@tanstack/react-query";
 
-export const getListingById = async (listingId: number) => {
+export const getListingById = async (listingId: string) => {
   const response = await fetch(`${SITE_API}/Listing/${listingId}`).then((res) =>
     res.json()
   );
@@ -11,7 +11,7 @@ export const getListingById = async (listingId: number) => {
 };
 
 const useGetListing = (
-  listingId: number,
+  listingId: string,
   options?: {deps?: QueryKey; enabled?: boolean}
 ) => {
   return useQuery({
