@@ -75,6 +75,24 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
       <head>
         <link rel="icon" type="image/png" href="/logo.png" sizes="any" />
         <meta name="theme-color" content="#ffffff" />
+        <meta
+          name="description"
+          content="Inter Asian Realty Services Inc. - Find your dream home in Cebu, Philippines."
+        />
+        <meta
+          name="keywords"
+          content="real estate, property, Cebu, Philippines, realty, house, condo, apartment, land"
+        />
+        <meta name="author" content="Inter Asian Realty Services Inc." />
+        <meta
+          property="og:title"
+          content="Inter Asian Realty Services Inc. - Find your dream home in Cebu, Philippines."
+        />
+        <meta
+          property="og:description"
+          content="Inter Asian Realty Services Inc. - Find your dream home in Cebu, Philippines."
+        />
+        <meta property="og:type" content="website" />
         <link rel="canonical" href="https://interasianrealty.vercel.app" />
       </head>
       <body className={inter.className}>
