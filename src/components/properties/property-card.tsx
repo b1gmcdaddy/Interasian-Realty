@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import {motion} from "framer-motion";
-import {Bath, Bed, Heart, MapPin, Ruler} from "lucide-react";
+import {Bath, Bed, MapPin, Ruler} from "lucide-react";
 import {Property} from "@/lib/types";
 import {formatPrice} from "@/lib/utils";
 import {AspectRatio} from "@/components/ui/aspect-ratio";
