@@ -8,7 +8,6 @@ import {
   PropertySort,
   Property,
   PropertyType,
-  ApiResponse,
 } from "@/lib/types";
 import {fadeIn, staggerContainer} from "@/lib/motion";
 import PropertyCard from "@/components/properties/property-card";
@@ -25,7 +24,6 @@ import {
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -36,7 +34,7 @@ import {useSearchParams} from "next/navigation";
 
 export default function PropertiesPage() {
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 10; // This should match your API's page size
+  const pageSize = 10;
 
   const {
     data: listingsData,
