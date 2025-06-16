@@ -19,7 +19,7 @@ export default function FeaturedProperties() {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
-  const featuredListings = listings?.slice(0, 3);
+  const featuredListings = listings?.data?.slice(0, 3);
 
   return (
     <div className="text-center">

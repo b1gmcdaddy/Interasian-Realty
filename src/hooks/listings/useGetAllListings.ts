@@ -37,9 +37,6 @@ const useGetAllListings = (
   return useQuery({
     queryKey: ["getAllListings", params, options?.deps],
     queryFn: () => getAllListings(params),
-    select: (data) => {
-      return data.data;
-    },
     enabled: options?.enabled,
   });
 };

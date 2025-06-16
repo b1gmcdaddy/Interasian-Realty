@@ -8,6 +8,7 @@ import {
   PropertySort,
   Property,
   PropertyType,
+  ApiResponse,
 } from "@/lib/types";
 import {fadeIn, staggerContainer} from "@/lib/motion";
 import PropertyCard from "@/components/properties/property-card";
@@ -21,15 +22,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import useGetAllListings from "@/hooks/listings/useGetAllListings";
 import {useSearchParams} from "next/navigation";
 
 export default function PropertiesPage() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10; // This should match your API's page size
+
   const {
-    data: listings,
+    data: listingsData,
     isLoading: isLoadingListings,
     error: errorListings,
-  } = useGetAllListings();
+  } = useGetAllListings({
+    pageNumber: currentPage,
+    pageSize: pageSize,
+  });
+
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState<PropertyFilter>({});
   const [sort, setSort] = useState<PropertySort>({
@@ -60,7 +77,7 @@ export default function PropertiesPage() {
   }, [type, city, minPrice, maxPrice]);
 
   // Filter and sort properties
-  const filteredListings = listings
+  const filteredListings = listingsData?.data
     ?.filter((listing: Property) => {
       if (!listing.status) return false;
       if (
@@ -117,7 +134,7 @@ export default function PropertiesPage() {
 
       return true;
     })
-    .sort((a, b) => {
+    .sort((a: Property, b: Property) => {
       if (sort.field === "price") {
         return sort.direction === "asc" ? a.price - b.price : b.price - a.price;
       }
@@ -133,6 +150,8 @@ export default function PropertiesPage() {
       }
       return 0;
     });
+
+  const pagination = listingsData?.pagination;
 
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
@@ -192,14 +211,73 @@ export default function PropertiesPage() {
           </aside>
 
           <div className="lg:col-span-3">
-            {filteredListings?.length! > 0 ? (
-              <motion.div
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                {...staggerContainer()}>
-                {filteredListings?.map((listing: Property) => (
-                  <PropertyCard key={listing.id} property={listing} />
-                ))}
-              </motion.div>
+            {filteredListings && filteredListings.length > 0 ? (
+              <>
+                <motion.div
+                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"
+                  {...staggerContainer()}>
+                  {filteredListings.map((listing: Property) => (
+                    <PropertyCard key={listing.id} property={listing} />
+                  ))}
+                </motion.div>
+
+                {pagination && (
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            if (pagination.hasPrevious) {
+                              setCurrentPage(currentPage - 1);
+                            }
+                          }}
+                          className={
+                            !pagination.hasPrevious
+                              ? "pointer-events-none opacity-50"
+                              : ""
+                          }
+                        />
+                      </PaginationItem>
+
+                      {Array.from(
+                        {length: pagination.totalPages},
+                        (_, i) => i + 1
+                      ).map((page) => (
+                        <PaginationItem key={page}>
+                          <PaginationLink
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setCurrentPage(page);
+                            }}
+                            isActive={page === currentPage}>
+                            {page}
+                          </PaginationLink>
+                        </PaginationItem>
+                      ))}
+
+                      <PaginationItem>
+                        <PaginationNext
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            if (pagination.hasNext) {
+                              setCurrentPage(currentPage + 1);
+                            }
+                          }}
+                          className={
+                            !pagination.hasNext
+                              ? "pointer-events-none opacity-50"
+                              : ""
+                          }
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                )}
+              </>
             ) : (
               <div className="bg-muted rounded-lg p-8 text-center">
                 <h3 className="text-xl font-semibold mb-2">

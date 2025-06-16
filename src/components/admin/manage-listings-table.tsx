@@ -82,9 +82,9 @@ export default function ManageListingsTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {listings && listings.length > 0 ? (
+          {listings && listings.data && listings.data.length > 0 ? (
             <AnimatePresence>
-              {listings.map((listing, idx) => (
+              {listings.data?.map((listing, idx) => (
                 <motion.tr
                   key={listing.id}
                   initial={{opacity: 0, y: 10}}

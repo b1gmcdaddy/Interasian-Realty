@@ -126,10 +126,10 @@ export default function Hero() {
 
               {showResults &&
                 searchQuery &&
-                listings &&
-                listings.length > 0 && (
+                listings?.data &&
+                listings.data?.length > 0 && (
                   <div className="absolute w-full mt-2 bg-white dark:bg-gray-900 rounded-lg shadow-lg max-h-[300px] overflow-y-auto z-50">
-                    {listings.map((listing) => (
+                    {listings.data?.map((listing) => (
                       <div
                         key={listing.id}
                         onClick={() => handleResultClick(listing)}

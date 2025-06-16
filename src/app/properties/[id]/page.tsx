@@ -38,7 +38,7 @@ export default function PropertyDetailPage() {
   }
 
   const relatedProperties =
-    allListings
+    allListings?.data
       ?.filter(
         (p: Property) =>
           p.id !== listingId && p.propertyType === listing?.propertyType
