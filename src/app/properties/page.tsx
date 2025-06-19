@@ -63,7 +63,6 @@ export default function PropertiesPage() {
     maxPrice = max;
   }
 
-  // Sync filters with query params
   useEffect(() => {
     setFilters((prev) => ({
       ...prev,
@@ -74,7 +73,6 @@ export default function PropertiesPage() {
     }));
   }, [type, city, minPrice, maxPrice]);
 
-  // Filter and sort properties
   const filteredListings = listingsData?.data
     ?.filter((listing: Property) => {
       if (!listing.status) return false;

@@ -5,11 +5,11 @@ import CallToAction from "@/components/home/call-to-action";
 import type {Metadata} from "next";
 
 export const metadata: Metadata = {
-  title: "Find Your Dream Property in Cebu",
+  title: "Inter Asian Realty Services Inc.",
   description:
     "Discover the perfect property in Cebu with Inter Asian Realty Services. Browse our extensive collection of houses, condos, apartments, and more.",
   openGraph: {
-    title: "Find Your Dream Property in Cebu",
+    title: "Inter Asian Realty Services Inc.",
     description:
       "Discover the perfect property in Cebu with Inter Asian Realty Services. Browse our extensive collection of houses, condos, apartments, and more.",
     images: [
